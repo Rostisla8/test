@@ -1,0 +1,19 @@
+.addCard {
+  background-color: rgba(200, 200, 200, 0.1); /* Полупрозрачный серый фон */
+  border: 2px dashed rgba(0, 0, 0, 0.2); /* Пунктирная граница */
+  color: rgba(0, 0, 0, 0.4); /* Полупрозрачный цвет иконки */
+  border-radius: 20px;
+  min-height: 100px; /* Такая же высота, как у SubjectCard */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  width: 100%; /* Занимает всю ширину ячейки грида */
+}
+
+.addCard:hover {
+  background-color: rgba(200, 200, 200, 0.2);
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.3);
+} 

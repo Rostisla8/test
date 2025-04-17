@@ -1,0 +1,58 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Примерная высота */
+  background-color: #ffffff;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5px 10px; /* Немного уменьшил вертикальный padding */
+  box-sizing: border-box; /* Учитываем padding */
+}
+
+/* Общий стиль для элементов навигации (ссылок и кнопок) */
+.navItem {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Центрируем иконку и текст */
+  flex: 1; /* Занимаем равное пространство */
+  height: 100%;
+  cursor: pointer;
+  color: #888; /* Цвет неактивной иконки/текста */
+  text-decoration: none; /* Убираем подчеркивание у ссылок */
+  font-size: 10px; /* Размер текста под иконкой */
+  gap: 2px; /* Небольшой отступ между иконкой и текстом */
+}
+
+/* Убираем стандартные стили у кнопок */
+.navItem:disabled {
+  cursor: default;
+  opacity: 0.5; /* Делаем неактивные кнопки полупрозрачными */
+}
+
+/* Стиль для активной ссылки */
+.navItem.active {
+  color: #ff6f61; /* Пример активного цвета (оранжево-красный) - подберите нужный */
+  /* Можно добавить другие стили, например, жирный шрифт */
+  /* font-weight: bold; */
+}
+
+/* Убираем стандартные стили у ссылок */
+.navItem:focus,
+.navItem:hover {
+  outline: none;
+  color: #555; /* Небольшое изменение цвета при наведении */
+}
+
+/* Стиль для активной ссылки при наведении */
+.navItem.active:hover {
+  color: #ff6f61; /* Оставляем активный цвет при наведении */
+}
+
+/* Стили для активной кнопки будут добавлены позже */ 
