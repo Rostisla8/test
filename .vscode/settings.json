@@ -1,0 +1,34 @@
+{
+  "cursor.customModelProviders": [
+    {
+      "baseURL": "https://openrouter.ai/api/v1",
+      "apiKey": "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",
+      "models": [
+        {
+          "name": "deepseek-coder:33b-instruct",
+          "alias": "Deepseek",
+          "defaultForAutocomplete": true,
+          "defaultForChat": true
+        },
+        {
+          "name": "mistral-7b-instruct",
+          "alias": "Mistral"
+        },
+        {
+          "name": "anthropic/claude-3-haiku",
+          "alias": "Claude 3 Haiku"
+        },
+        {
+          "name": "google/gemini-pro",
+          "alias": "Gemini Pro"
+        },
+        {
+          "name": "cohere/command-r",
+          "alias": "Command-R"
+        }
+      ]
+    }
+  ],
+  "cursor.disableAgent": true,
+  "cursor.disableEdit": true
+}
