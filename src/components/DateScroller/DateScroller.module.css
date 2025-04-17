@@ -1,0 +1,60 @@
+.scrollerContainer {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px 0 15px 0; /* Отступы сверху/снизу */
+  gap: 10px; /* Уменьшил отступ */
+  margin: 20px 0;
+  padding-left: 15px; /* Отступ слева */
+  padding-right: 15px; /* Отступ справа */
+  border-bottom: 1px solid #eee;
+  
+  /* Скрываем скроллбар */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE и Edge */
+}
+
+.scrollerContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.dateItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px 0;
+  min-width: 45px; /* Минимальная ширина */
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid transparent; /* Граница для выравнивания */
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* Не сжиматься */
+}
+
+.dateItem:hover {
+  /* background-color: #f5f5f5; */
+}
+
+.dayLabel {
+  font-size: 11px; /* Уменьшил шрифт */
+  color: #888;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.dayNumber {
+  font-size: 15px; /* Уменьшил шрифт */
+  font-weight: 600;
+  color: #333;
+}
+
+.selected {
+  background-color: #FF9500;
+  color: white;
+}
+
+.selected .dayLabel,
+.selected .dayNumber {
+  color: white;
+} 

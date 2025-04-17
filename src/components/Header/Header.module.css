@@ -1,0 +1,38 @@
+.header {
+  /* Примерный зеленый цвет фона */
+  background: linear-gradient(180deg, #2a9d8f 0%, #264653 100%);
+  color: white;
+  padding: 20px;
+  position: relative;
+  min-height: 150px; /* Примерная высота, подстроим */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Размещаем контент */
+  border-bottom-left-radius: 30px; /* Скругление */
+  border-bottom-right-radius: 30px;
+}
+
+.content {
+  display: flex;
+  justify-content: flex-end; /* Помещаем иконку поиска справа */
+  align-items: center;
+  padding-top: 10px; /* Отступ сверху для статус-бара */
+}
+
+.searchButton {
+  background: rgba(255, 255, 255, 0.2); /* Полупрозрачный фон */
+  border: none;
+  border-radius: 50%; /* Круглая кнопка */
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Стили для изображения глобуса/книг можно добавить позже */
+/* Можно использовать ::before или ::after псевдоэлементы или img тег */ 

@@ -1,0 +1,18 @@
+.forecastContainer {
+  display: flex; /* Располагаем карточки в ряд */
+  overflow-x: auto; /* Включаем горизонтальную прокрутку */
+  padding: 10px 0 15px 0; /* Отступы сверху/снизу */
+  gap: 15px; /* Отступ между карточками */
+  
+  /* Для поддержки свайпа на мобильных */
+  -webkit-overflow-scrolling: touch; /* Сглаженный скролл на iOS */
+  
+  /* Скрываем скроллбар для всех браузеров */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE и Edge */
+}
+
+/* Скрываем скроллбар для Chrome, Safari и Opera */
+.forecastContainer::-webkit-scrollbar {
+  display: none;
+} 
