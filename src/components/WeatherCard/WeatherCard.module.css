@@ -1,17 +1,19 @@
 .weatherCard {
   background-color: #ffffff;
   border-radius: 15px;
-  padding: 12px 15px;
+  padding: 15px 20px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  min-width: 110px; /* Уменьшаем минимальную ширину */
+  min-width: 150px; /* Увеличиваем минимальную ширину */
+  max-width: 200px; /* Ограничиваем максимальную ширину */
   flex: 1; /* Распределяем доступное пространство */
   flex-shrink: 0; /* Предотвращает сжатие карточек */
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* Анимация при взаимодействии */
-  margin: 0 2px; /* Минимальные боковые отступы */
+  margin: 0 4px; /* Увеличиваем боковые отступы */
+  height: auto; /* Автоматическая высота */
 }
 
 /* Небольшой эффект при нажатии */
@@ -20,51 +22,94 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Специальные стили для карточек с прогнозом на завтра */
+.tomorrowCard {
+  background-color: #f0f8ff; /* Светло-голубой фон */
+  border-left: 3px solid #3498db; /* Голубая полоса слева */
+}
+
+.cardHeader {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .periodLabel {
-  font-size: 13px;
+  font-size: 14px;
   color: #555;
-  margin: 0 0 5px 0;
+  margin: 0;
   font-weight: 500;
   width: 100%; /* На всю ширину родителя */
-  text-align: center; /* Центрирование текста */
+  text-align: left; /* Выравнивание текста по левому краю */
 }
 
 .weatherIcon {
-  width: 50px; /* Немного уменьшаем размер иконки для лучшей адаптивности */
-  height: 50px;
-  margin: 5px 0;
+  width: 55px; /* Увеличиваем размер иконки */
+  height: 55px;
+  margin: 0;
 }
 
 .temperature {
-  font-size: 20px;
+  font-size: 22px; /* Увеличиваем размер */
   font-weight: bold;
   color: #333;
   margin: 5px 0;
 }
 
 .description {
-  font-size: 12px;
+  font-size: 13px;
   color: #777;
-  margin: 0;
+  margin: 0 0 5px 0;
   max-width: 100%; /* Предотвращаем переполнение */
   white-space: nowrap; /* Предотвращаем перенос текста */
   overflow: hidden; /* Скрываем переполнение */
   text-overflow: ellipsis; /* Добавляем многоточие при переполнении */
 }
 
+/* Стили для блока с дополнительной информацией */
+.additionalInfo {
+  width: 100%;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.detailLabel {
+  font-weight: 500;
+  text-align: left;
+}
+
+.detailValue {
+  text-align: right;
+  color: #333;
+  margin-left: 10px;
+}
+
 /* Медиа-запрос для мобильных устройств */
 @media (max-width: 480px) {
   .weatherCard {
-    padding: 10px 12px;
-    min-width: 100px;
+    padding: 12px 15px;
+    min-width: 140px;
+    margin: 0 3px;
   }
   
   .weatherIcon {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
   }
   
   .temperature {
-    font-size: 18px;
+    font-size: 20px;
   }
 } 

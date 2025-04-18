@@ -17,6 +17,9 @@ const WeatherForecast = ({ forecastData = [] }) => {
           temperature={period.temp}
           description={period.description}
           iconCode={period.icon}
+          humidity={period.humidity}
+          windSpeed={period.windSpeed}
+          pressure={period.pressure}
         />
       ))}
     </div>

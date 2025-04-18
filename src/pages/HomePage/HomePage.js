@@ -117,23 +117,35 @@ const processWeatherData = (apiData) => {
     }
   });
 
-  // Вычисляем средние/репрезентативные значения для каждого периода
+  // Находим максимальную температуру и соответствующие данные для каждого периода
   const result = Object.values(periods).map(period => {
     if (period.data.length === 0) return null; // Пропускаем пустые периоды
 
-    // Средняя температура
-    const avgTemp = period.data.reduce((sum, item) => sum + item.main.temp, 0) / period.data.length;
+    // Находим прогноз с максимальной температурой
+    let maxTempItem = period.data[0];
+    period.data.forEach(item => {
+      if (item.main.temp > maxTempItem.main.temp) {
+        maxTempItem = item;
+      }
+    });
     
-    // Репрезентативная погода (берем из середины периода или первый)
-    const representativeItem = period.data[Math.floor(period.data.length / 2)] || period.data[0];
-    const description = representativeItem.weather[0]?.description || 'N/A';
-    const icon = representativeItem.weather[0]?.icon || '01d'; // Иконка по умолчанию
+    // Используем данные из прогноза с максимальной температурой
+    const description = maxTempItem.weather[0]?.description || 'N/A';
+    const icon = maxTempItem.weather[0]?.icon || '01d';
+    
+    // Добавляем дополнительные данные для всех периодов
+    const humidity = maxTempItem.main?.humidity;
+    const windSpeed = maxTempItem.wind?.speed;
+    const pressure = maxTempItem.main?.pressure;
 
     return {
       label: period.label,
-      temp: avgTemp,
+      temp: maxTempItem.main.temp,
       description: description.charAt(0).toUpperCase() + description.slice(1), // С большой буквы
       icon: icon,
+      humidity: humidity,
+      windSpeed: windSpeed,
+      pressure: pressure
     };
   }).filter(Boolean); // Убираем null (пустые периоды)
 
@@ -269,6 +281,71 @@ const HomePage = () => {
       setLoadingWeather(true);
       setWeatherError(null);
 
+      // Для тестирования в Telegram Mini App сразу устанавливаем тестовые данные
+      if (window.Telegram && window.Telegram.WebApp) {
+        console.log('Telegram WebApp: Устанавливаем тестовые значения для погоды');
+        const testWeatherData = [
+          {
+            label: "Сегодня утром",
+            temp: 19.2,
+            description: "Переменная облачность",
+            icon: "03d",
+            humidity: 70,
+            windSpeed: 3.5,
+            pressure: 1012,
+          },
+          {
+            label: "Сегодня днем",
+            temp: 25.7,
+            description: "Ясно",
+            icon: "01d",
+            humidity: 65,
+            windSpeed: 4.2,
+            pressure: 1011,
+          },
+          {
+            label: "Сегодня вечером",
+            temp: 20.4,
+            description: "Небольшая облачность",
+            icon: "02n",
+            humidity: 72,
+            windSpeed: 3.8,
+            pressure: 1010,
+          },
+          {
+            label: "Завтра утром",
+            temp: 18.5,
+            description: "Небольшой дождь",
+            icon: "10d",
+            humidity: 75,
+            windSpeed: 6.2,
+            pressure: 1010,
+          },
+          {
+            label: "Завтра днем", 
+            temp: 24.8,
+            description: "Гроза",
+            icon: "11d",
+            humidity: 82,
+            windSpeed: 8.1,
+            pressure: 1007,
+          },
+          {
+            label: "Завтра вечером",
+            temp: 19.6,
+            description: "Облачно с прояснениями",
+            icon: "04n",
+            humidity: 68,
+            windSpeed: 5.4,
+            pressure: 1011,
+          }
+        ];
+        
+        setWeatherData(testWeatherData);
+        setLoadingWeather(false);
+        return;
+      }
+
       // Сначала проверяем кеш
       const cachedWeatherData = getFromCache(WEATHER_CACHE_KEY, CACHE_DURATION.WEATHER);
       if (cachedWeatherData) {
@@ -281,6 +358,11 @@ const HomePage = () => {
       // Если кеш пуст или устарел, делаем запрос к API
       try {
         const response = await fetch(
+
+          // `https://api.openweathermap.org/data/2.5/weather?q=Брест&lang=ru&appid=01ffc5c2eafbb0930b2eebf9e7f897f1&units=metric`
+
+        //  `https://api.openweathermap.org/data/2.5/forecast?appid=01ffc5c2eafbb0930b2eebf9e7f897f1&units=metric&q=Брест`
+
           `https://api.openweathermap.org/data/2.5/forecast?lat=${BREST_LAT}&lon=${BREST_LON}&appid=${OPENWEATHER_API_KEY}&units=metric`
         );
         if (!response.ok) {

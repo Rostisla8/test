@@ -20,7 +20,7 @@ const NewsPage = () => {
         // Запрос новостей через newsdata.io API
         // Параметры: q=Брест для поиска новостей о Бресте, language=ru для русскоязычных новостей
         const response = await fetch(
-          `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&q=Брест&language=ru`
+          `https://newsdata.io/api/1/latest?apikey=${NEWS_API_KEY}&country=by&language=ru&q=Брест`
         );
         
         if (!response.ok) {
