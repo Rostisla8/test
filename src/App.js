@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import HomePage from './pages/HomePage/HomePage';
 import MovieSchedulePage from './pages/MovieSchedulePage/MovieSchedulePage';
+import NewsPage from './pages/NewsPage/NewsPage';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 
 function App() {
@@ -19,12 +20,9 @@ function App() {
             <MovieSchedulePage />
             <BottomNavigation activeTab="schedule" />
           </>} />
-          <Route path="/chat" element={<>
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <h2>Чат</h2>
-              <p>Страница в разработке</p>
-            </div>
-            <BottomNavigation activeTab="chat" />
+          <Route path="/news" element={<>
+            <NewsPage />
+            <BottomNavigation activeTab="news" />
           </>} />
           <Route path="/profile" element={<>
             <div style={{ padding: '20px', textAlign: 'center' }}>

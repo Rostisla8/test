@@ -1,0 +1,93 @@
+.newsCard {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 15px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newsCard:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageContainer {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.newsImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contentContainer {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.newsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+  line-height: 1.3;
+}
+
+.newsDescription {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.newsFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.newsSource {
+  font-weight: 500;
+  color: #FF9500;
+}
+
+.newsDate {
+  color: #888;
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 480px) {
+  .imageContainer {
+    height: 150px;
+  }
+  
+  .contentContainer {
+    padding: 12px;
+  }
+  
+  .newsTitle {
+    font-size: 15px;
+  }
+  
+  .newsDescription {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+} 

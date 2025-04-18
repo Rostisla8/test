@@ -383,9 +383,7 @@ const HomePage = () => {
         {loadingWeather && <p>Загрузка погоды...</p>}
         {weatherError && <p style={{ color: 'red' }}>{weatherError}</p>}
         {!loadingWeather && !weatherError && (
-          <div style={{ paddingLeft: '15px', paddingRight: '15px' }}>
-            <WeatherForecast forecastData={weatherData} />
-          </div>
+          <WeatherForecast forecastData={weatherData} />
         )}
       </section>
 
