@@ -12,14 +12,60 @@
   border-bottom-right-radius: 30px;
 }
 
-.content {
+/* Добавляем стили для центрального контейнера */
+.mainContainer {
   display: flex;
-  justify-content: flex-end; /* Помещаем иконку поиска справа */
+  flex: 1;
+  justify-content: center;
   align-items: center;
-  padding-top: 10px; /* Отступ сверху для статус-бара */
+  z-index: 1;
+}
+
+/* Добавляем стили для контейнера логотипа */
+.logoContainer {
+  display: flex;
+  align-items: normal;
+  gap: 15px;
+}
+
+/* Стили для логотипа */
+.logo {
+  width: 10px;
+  height: 10px;
+  overflow: visible;
+  /* Фильтр для тени */
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+  /* Добавим дополнительное уменьшение масштаба */
+  transform: scale(0.1);
+}
+
+/* Переопределяем стили для элементов SVG, чтобы они были белыми */
+.logo path {
+  stroke: #ffffff !important;
+}
+
+.logo g {
+  stroke: #ffffff !important;
+}
+
+/* Стили для текста логотипа */
+.logoText {
+  font-size: 42px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  /* Добавляем тень для текста */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  /* Используем специальный шрифт */
+  font-family: 'Segoe Script', 'Brush Script MT', cursive;
+
+  margin-left: 20px;
 }
 
 .searchButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   background: rgba(255, 255, 255, 0.2); /* Полупрозрачный фон */
   border: none;
   border-radius: 50%; /* Круглая кнопка */
@@ -28,10 +74,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .searchButton:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 480px) {
+  /* .logoText {
+    font-size: 24px;
+  } */
+
+
+  .logoText {
+    font-size: 42px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+    /* Добавляем тень для текста */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    /* Используем специальный шрифт */
+    font-family: 'Segoe Script', 'Brush Script MT', cursive;
+  
+    margin-left: 20px;
+  }
+
+  
+  /* .logo {
+    width: 35px;
+    height: 35px;
+  } */
+
+  .logo {
+    width: 10px;
+    height: 10px;
+    overflow: visible;
+    /* Фильтр для тени */
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+    /* Добавим дополнительное уменьшение масштаба */
+    transform: scale(0.1);
+  }
 }
 
 /* Стили для изображения глобуса/книг можно добавить позже */

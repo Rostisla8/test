@@ -1,18 +1,14 @@
 .homePage {
   /* Убираем стандартные padding, т.к. у Header и секций будут свои */
-  padding-bottom: 100px; /* Увеличиваем отступ для BottomNav */
+  padding-bottom: 30px; /* Увеличиваем отступ для BottomNav */
   background-color: #f4f6f8; /* Светлый фон для основной части */
-  width: 100%; /* Изменяем с max-width на width для адаптивности */
-  max-width: 100%; /* Используем 100% ширину */
+  max-width: 600px;
   margin: 0 auto;
-  padding: 10px; /* Уменьшаем отступы по бокам */
-  box-sizing: border-box; /* Учитываем padding в общей ширине */
+  /* padding: 20px; */
 }
 
 .section {
-  padding: 10px; /* Уменьшаем отступы внутри секций */
-  width: 100%; /* Делаем секции на всю ширину */
-  box-sizing: border-box; /* Учитываем padding в общей ширине */
+  padding: 20px;
 }
 
 .sectionTitle {
@@ -30,33 +26,11 @@
 
 .weatherSection {
   margin-bottom: 20px; /* Добавляем отступ снизу для секции с погодой */
-  width: 100%; /* На всю ширину */
-  padding: 0 5px; /* Минимальные отступы по бокам */
 }
 
 /* Сетка для карточек предметов */
 .subjectsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Две колонки */
-  gap: 10px; /* Уменьшаем отступ между карточками */
-  width: 100%; /* На всю ширину */
-}
-
-/* Медиа-запрос для разных устройств */
-@media (min-width: 768px) {
-  .homePage {
-    max-width: 95%; /* Небольшой отступ от краев на больших экранах */
-  }
-  
-  .section {
-    padding: 15px;
-  }
-  
-  .weatherSection {
-    padding: 0 10px;
-  }
-  
-  .subjectsGrid {
-    gap: 15px;
-  }
+  gap: 15px; /* Отступ между карточками */
 } 

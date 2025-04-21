@@ -19,15 +19,16 @@ const BottomNav = () => {
         <FaCalendarAlt size={20} />
         <span>Schedule</span>
       </NavLink>
-      {/* Заглушки для других ссылок */}
+      {/* Заглушка для чата */}
       <button className={styles.navItem} disabled>
         <FaComment size={20} />
         <span>Chat</span>
       </button>
-      <button className={styles.navItem} disabled>
+      {/* Активная ссылка на профиль */}
+      <NavLink to="/profile" className={getNavLinkClass}>
         <FaUser size={20} />
         <span>Profile</span>
-      </button>
+      </NavLink>
     </nav>
   );
 };

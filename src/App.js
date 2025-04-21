@@ -5,6 +5,7 @@ import './App.css';
 import HomePage from './pages/HomePage/HomePage';
 import MovieSchedulePage from './pages/MovieSchedulePage/MovieSchedulePage';
 import NewsPage from './pages/NewsPage/NewsPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 
 function App() {
@@ -25,10 +26,7 @@ function App() {
             <BottomNavigation activeTab="news" />
           </>} />
           <Route path="/profile" element={<>
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <h2>Профиль</h2>
-              <p>Страница в разработке</p>
-            </div>
+            <ProfilePage />
             <BottomNavigation activeTab="profile" />
           </>} />
         </Routes>

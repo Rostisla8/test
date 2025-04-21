@@ -1,0 +1,203 @@
+.profilePage {
+  padding: 20px;
+  padding-top: 30px;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+/* Стили для секции с аватаром */
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.avatarContainer {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.avatar, .defaultAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffffff;
+  object-fit: cover;
+}
+
+.cameraButton {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #2a9d8f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cameraButton:hover {
+  background-color: #238a7d;
+}
+
+.userName {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.userUsername {
+  font-size: 16px;
+  color: #666;
+  margin: 5px 0 0 0;
+}
+
+.userTelegramId {
+  font-size: 13px;
+  color: #888;
+  margin: 3px 0 0 0;
+}
+
+/* Стили для секции с информацией пользователя */
+.userInfoSection {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.infoIcon {
+  font-size: 20px;
+  color: #2a9d8f;
+  margin-right: 15px;
+  min-width: 24px;
+}
+
+.telegramIcon {
+  color: #0088cc; /* Официальный цвет Telegram */
+}
+
+.infoText {
+  flex: 1;
+}
+
+.infoLabel {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 5px 0;
+}
+
+.infoValue {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Стили для секции с настройками */
+.settingsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settingsButton, .logoutButton {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.settingsButton {
+  color: #333;
+}
+
+.logoutButton {
+  color: #e63946;
+}
+
+.buttonIcon {
+  margin-right: 12px;
+  font-size: 18px;
+}
+
+.settingsButton:hover {
+  background-color: #f8f9fa;
+}
+
+.logoutButton:hover {
+  background-color: #fff1f1;
+}
+
+/* Раздел "В разработке" */
+.developmentNote {
+  background-color: #fffbea;
+  border-left: 4px solid #ffd700;
+  padding: 12px 15px;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.developmentNote p {
+  margin: 0;
+  font-size: 14px;
+  color: #766a00;
+}
+
+/* Медиа запрос для более крупных экранов */
+@media (min-width: 768px) {
+  .profilePage {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 40px;
+  }
+  
+  .userInfoSection, .settingsSection {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+} 

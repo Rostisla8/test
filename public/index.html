@@ -24,7 +24,9 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <!-- Добавляем скрипт для Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>BrestHub</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -39,5 +41,18 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <!-- Инициализация Telegram Web App -->
+    <script>
+      if (window.Telegram && window.Telegram.WebApp) {
+        // Сообщаем Telegram, что мини-приложение готово к отображению
+        window.Telegram.WebApp.ready();
+        // Установка основного цвета темы приложения
+        window.Telegram.WebApp.setHeaderColor('#2a9d8f');
+        // Включаем расширение окна на весь экран, если возможно
+        if (window.Telegram.WebApp.expand) {
+          window.Telegram.WebApp.expand();
+        }
+      }
+    </script>
   </body>
 </html>
