@@ -5,6 +5,7 @@ import './App.css';
 import HomePage from './pages/HomePage/HomePage';
 import MovieSchedulePage from './pages/MovieSchedulePage/MovieSchedulePage';
 import NewsPage from './pages/NewsPage/NewsPage';
+import TrendsPage from './pages/TrendsPage/TrendsPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 
@@ -23,6 +24,10 @@ function App() {
           </>} />
           <Route path="/news" element={<>
             <NewsPage />
+            <BottomNavigation activeTab="news" />
+          </>} />
+          <Route path="/trends" element={<>
+            <TrendsPage />
             <BottomNavigation activeTab="news" />
           </>} />
           <Route path="/profile" element={<>

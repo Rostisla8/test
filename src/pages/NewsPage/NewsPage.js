@@ -13,6 +13,42 @@ const NewsPage = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
+      const userData = {
+        telegram_id: 123456789,
+        first_name: "Тестовый",
+        last_name: "Пользователь",
+        username: "test_user",
+        photo_url: "https://avatars.githubusercontent.com/test_user?s=200",
+        auth_date: 16312344444567,
+        hash: "test_hash"
+      };
+      
+      // Функция для отправки запроса
+      async function testUserApi() {
+        try {
+          console.log('Отправляем запрос на сервер...');
+          
+          const response = await fetch('https://cx21729.tw1.ru/api/users.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+          });
+          
+          const data = await response.json();
+          console.log('Ответ от сервера:');
+          console.log(JSON.stringify(data, null, 2));
+          
+          return data;
+        } catch (error) {
+          console.error('Ошибка при выполнении запроса:', error);
+        }
+      }
+      
+      // Запускаем тест
+      testUserApi();
+
       setLoading(true);
       setError(null);
       
@@ -49,7 +85,7 @@ const NewsPage = () => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <NewsHeader />
+        <NewsHeader activePage="news" />
         <div className={styles.status}>Загрузка новостей...</div>
       </div>
     );
@@ -58,7 +94,7 @@ const NewsPage = () => {
   if (error) {
     return (
       <div className={styles.container}>
-        <NewsHeader />
+        <NewsHeader activePage="news" />
         <div className={styles.error}>{error}</div>
       </div>
     );
@@ -67,7 +103,7 @@ const NewsPage = () => {
   if (news.length === 0) {
     return (
       <div className={styles.container}>
-        <NewsHeader />
+        <NewsHeader activePage="news" />
         <div className={styles.noNews}>Новости не найдены</div>
       </div>
     );
@@ -75,7 +111,7 @@ const NewsPage = () => {
 
   return (
     <div className={styles.container}>
-      <NewsHeader />
+      <NewsHeader activePage="news" />
       
       <div className={styles.newsList}>
         {news.map((item, index) => (

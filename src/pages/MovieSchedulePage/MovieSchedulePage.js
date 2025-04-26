@@ -5,6 +5,7 @@ import styles from './MovieSchedulePage.module.css';
 import CalendarHeader from '../../components/CalendarHeader/CalendarHeader';
 import DateScroller from '../../components/DateScroller/DateScroller';
 import MovieCard from '../../components/MovieCard/MovieCard';
+import { FaStar, FaTimes } from 'react-icons/fa';
 
 // --- Вспомогательные функции для дат ---
 const russianMonths = [
@@ -44,6 +45,8 @@ const MovieSchedulePage = () => {
   const [availableDates, setAvailableDates] = useState(new Set()); // Оставляем Set для быстрой проверки в WeekDays (пока не заменили)
   const [availableDateObjects, setAvailableDateObjects] = useState([]); // Массив объектов Date для нового скроллера
   const [expandedMovieTitle, setExpandedMovieTitle] = useState(null); // Состояние для раскрытой карточки
+  const [favorites, setFavorites] = useState([]); // Состояние для хранения избранных фильмов
+  const [showFavorites, setShowFavorites] = useState(false); // Состояние для отображения попапа с избранными фильмами
   
   // Рассчитать конечное время фильма
   const calculateEndTime = (startTime, duration) => {
@@ -117,6 +120,52 @@ const MovieSchedulePage = () => {
     fetchMovies();
   }, []);
 
+  // Загружаем избранные фильмы из localStorage при первом рендере
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('favoriteMovies');
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch (e) {
+        console.error('Ошибка при загрузке избранных фильмов:', e);
+      }
+    }
+  }, []);
+
+  // Функция для добавления/удаления фильма из избранного
+  const toggleFavorite = (movie) => {
+    setFavorites(prevFavorites => {
+      let newFavorites;
+      // Проверяем, есть ли фильм уже в избранном
+      const movieExists = prevFavorites.some(fav => fav.title === movie.title);
+      
+      if (movieExists) {
+        // Удаляем фильм из избранного
+        newFavorites = prevFavorites.filter(fav => fav.title !== movie.title);
+      } else {
+        // Добавляем фильм в избранное
+        // Сохраняем только необходимые данные фильма
+        const movieToSave = {
+          title: movie.title,
+          image: movie.image,
+          director: movie.additional_info?.director,
+          duration: movie.additional_info?.duration,
+          description: movie.additional_info?.description,
+        };
+        newFavorites = [...prevFavorites, movieToSave];
+      }
+      
+      // Сохраняем в localStorage
+      localStorage.setItem('favoriteMovies', JSON.stringify(newFavorites));
+      return newFavorites;
+    });
+  };
+
+  // Функция для открытия/закрытия попапа с избранными фильмами
+  const toggleFavoritesPopup = () => {
+    setShowFavorites(prev => !prev);
+  };
+
   // Фильтрация и группировка фильмов по выбранной дате
   const getMoviesForSelectedDate = () => {
     if (!movies || movies.length === 0) return [];
@@ -187,7 +236,17 @@ const MovieSchedulePage = () => {
 
   return (
     <div className={styles.container}>
-      <CalendarHeader date={selectedDate} isToday={isToday} />
+      <div className={styles.headerActions}>
+        <CalendarHeader date={selectedDate} isToday={isToday} />
+        <button 
+          className={styles.favoritesButton} 
+          onClick={toggleFavoritesPopup}
+          aria-label="Избранные фильмы"
+        >
+          <FaStar color={'#FFD700'} size={20} />
+        </button>
+      </div>
+      
       <DateScroller 
           selectedDate={selectedDate} 
           onDateSelect={(date) => { 
@@ -212,10 +271,51 @@ const MovieSchedulePage = () => {
               movieGroup={movieGroup}
               isExpanded={movieGroup.movieData.title === expandedMovieTitle} // Передаем флаг раскрытия
               onToggleExpand={handleToggleExpand} // Передаем обработчик
+              onToggleFavorite={toggleFavorite} // Передаем обработчик для избранного
+              favorites={favorites} // Передаем список избранных фильмов
             />
           ) : null
         ))}
       </div>
+      
+      {/* Попап с избранными фильмами */}
+      {showFavorites && (
+        <div className={styles.favoritesOverlay} onClick={toggleFavoritesPopup}>
+          <div className={styles.favoritesPopup} onClick={e => e.stopPropagation()}>
+            <div className={styles.favoritesHeader}>
+              <h3>Избранные фильмы</h3>
+              <button 
+                className={styles.closeButton}
+                onClick={toggleFavoritesPopup}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            
+            {favorites.length === 0 ? (
+              <p className={styles.noFavorites}>У вас пока нет избранных фильмов</p>
+            ) : (
+              <ul className={styles.favoritesList}>
+                {favorites.map((movie, index) => (
+                  <li key={index} className={styles.favoriteItem}>
+                    <div className={styles.favoriteInfo}>
+                      <h4>{movie.title}</h4>
+                      {movie.director && <p className={styles.favoriteDirector}>Режиссер: {movie.director}</p>}
+                      {movie.duration && <p className={styles.favoriteDuration}>{movie.duration}</p>}
+                    </div>
+                    <button 
+                      className={styles.removeFavoriteButton}
+                      onClick={() => toggleFavorite(movie)}
+                    >
+                      <FaTimes />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

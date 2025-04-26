@@ -1,0 +1,737 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  padding-bottom: 100px; /* Увеличиваем отступ для BottomNav */
+  background-color: #f4f6f8; /* Светлый фон для основной части */
+  box-sizing: border-box;
+}
+
+.content {
+  margin-top: 20px;
+}
+
+/* Стили для формы создания поста */
+.createPostContainer {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.postHeader {
+  display: flex;
+  gap: 12px;
+}
+
+.postAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.postForm {
+  flex: 1;
+}
+
+.postInput {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  resize: none;
+  font-size: 15px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.postInput:focus {
+  outline: none;
+  border-color: #2a9d8f;
+}
+
+.postActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.postAttachments {
+  display: flex;
+  gap: 10px;
+}
+
+.attachButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attachButton:hover {
+  color: #2a9d8f;
+}
+
+.postSubmit {
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.postSubmit:hover {
+  background-color: #238a7d;
+}
+
+.postSubmit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Стили для списка постов */
+.postsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+}
+
+.postAuthorInfo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.authorAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.authorAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.authorDetails {
+  flex: 1;
+}
+
+.authorName {
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0;
+  color: #333;
+}
+
+.postTime {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.moreOptions {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.postContent {
+  margin-bottom: 15px;
+}
+
+.postText {
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.postFooter {
+  display: flex;
+  gap: 15px;
+  border-top: 1px solid #f1f1f1;
+  padding-top: 10px;
+}
+
+.postAction {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.postAction:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.postActionActive {
+  /* Убираем изменение цвета при активации кнопки комментариев */
+}
+
+/* Стили для пустого состояния */
+.emptyState {
+  background-color: white;
+  padding: 30px 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.emptyState h2 {
+  font-size: 20px;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.emptyState p {
+  font-size: 16px;
+  color: #888;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 95%;
+  }
+  
+  .postInput {
+    min-height: 80px;
+  }
+}
+
+/* Стили для превью изображения */
+.imagePreviewContainer {
+  position: relative;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 300px;
+}
+
+.imagePreview {
+  width: 100%;
+  object-fit: contain;
+  max-height: 300px;
+  border-radius: 10px;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.removeImageBtn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для изображения в посте */
+.postImageContainer {
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 350px;
+}
+
+.postImage {
+  width: 100%;
+  object-fit: contain;
+  max-height: 350px;
+  border-radius: 10px;
+}
+
+/* Стили для состояния загрузки */
+.loadingState {
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.loadingState p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Стили для состояния ошибки */
+.errorState {
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border-left: 4px solid #e74c3c;
+}
+
+.errorState p {
+  font-size: 16px;
+  color: #e74c3c;
+  margin: 0 0 15px 0;
+}
+
+.retryButton {
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+  background-color: #238a7d;
+}
+
+/* Стили для триггера загрузки дополнительных постов */
+.loadMoreTrigger {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingMoreText {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Стили иконок */
+.heartIcon {
+  font-size: 18px;
+  color: #666;
+}
+
+.heartIconLiked {
+  font-size: 18px;
+  color: #e0245e; /* Красный цвет для лайкнутого сердца */
+}
+
+.commentIcon,
+.retweetIcon {
+  font-size: 18px;
+  color: #666;
+}
+
+/* Стили для секции комментариев */
+.commentsSection {
+  margin-top: 15px;
+  padding: 15px;
+  border-top: 1px solid #e1e8ed;
+  background-color: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.commentsHeader {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #14171a;
+}
+
+.commentsLoading, .repliesLoading {
+  text-align: center;
+  color: #657786;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.noComments {
+  text-align: center;
+  color: #657786;
+  padding: 15px;
+  font-style: italic;
+}
+
+/* Стили для списка комментариев */
+.commentsList {
+  margin-bottom: 20px;
+}
+
+.commentItem {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.commentAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+  background-color: #e1e8ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.commentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.commentAuthor {
+  flex: 1;
+}
+
+.commentAuthorName {
+  font-weight: bold;
+  color: #14171a;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.commentTime {
+  color: #657786;
+  font-size: 12px;
+}
+
+.commentContent {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #14171a;
+  word-wrap: break-word;
+}
+
+.commentContent p {
+  margin: 0;
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.replyButton, .viewRepliesButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #657786;
+  font-size: 12px;
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.replyButton:hover, .viewRepliesButton:hover {
+  opacity: 0.8;
+}
+
+/* Стили для кнопки удаления комментария */
+.deleteCommentBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #657786;
+  padding: 5px;
+  margin-left: auto;
+}
+
+.deleteCommentBtn:hover {
+  opacity: 0.8;
+}
+
+/* Стили для формы ответа */
+.replyForm {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.replyInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  resize: none;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.replyFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Стили для кнопки отмены ответа */
+.cancelReplyBtn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 18px;
+  font-size: 13px;
+  cursor: pointer;
+  background-color: #e1e8ed;
+  color: #657786;
+}
+
+.cancelReplyBtn:hover {
+  opacity: 0.9;
+}
+
+/* Стили для кнопки отправки ответа */
+.submitReplyBtn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 18px;
+  font-size: 13px;
+  cursor: pointer;
+  background-color: #1da1f2;
+  color: white;
+}
+
+.submitReplyBtn:hover {
+  opacity: 0.9;
+}
+
+.submitReplyBtn:disabled {
+  background-color: #a5d0f5;
+  cursor: not-allowed;
+}
+
+/* Стили для списка ответов */
+.repliesList {
+  margin-top: 10px;
+  padding-top: 10px;
+  padding-left: 20px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.replyItem {
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+/* Стили для формы добавления комментария */
+.addCommentForm {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.commentInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e1e8ed;
+  border-radius: 10px;
+  resize: none;
+  margin-bottom: 12px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.commentInput:focus {
+  border-color: #1da1f2;
+  outline: none;
+}
+
+.submitCommentBtn {
+  padding: 8px 20px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  float: right;
+}
+
+.submitCommentBtn:hover {
+  opacity: 0.9;
+}
+
+.submitCommentBtn:disabled {
+  background-color: #a5d0f5;
+  cursor: not-allowed;
+}
+
+/* Стили для формы редактирования */
+.editForm {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.editInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  resize: none;
+  margin-bottom: 10px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+}
+
+.editFormButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.editCommentBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #657786;
+  font-size: 12px;
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editCommentBtn:hover {
+  opacity: 0.8;
+}
+
+.replyActions {
+  display: flex;
+  margin-top: 5px;
+  justify-content: flex-end;
+}
+
+/* Стили для кнопок в форме редактирования */
+.submitButton {
+  padding: 6px 12px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.submitButton:disabled {
+  background-color: #a5d0f5;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  padding: 6px 12px;
+  background-color: #e1e8ed;
+  color: #657786;
+  border: none;
+  border-radius: 18px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+.cancelButton:disabled {
+  background-color: #f1f1f1;
+  color: #a9a9a9;
+  cursor: not-allowed;
+}
+
+/* Дополнительные стили для отображения процесса загрузки */
+.commentLoading {
+  text-align: center;
+  color: #657786;
+  padding: 5px;
+  font-size: 12px;
+  font-style: italic;
+} 

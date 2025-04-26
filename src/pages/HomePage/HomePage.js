@@ -38,8 +38,9 @@ const colorPalette = ['#EF5350', '#AB47BC', '#26A69A', '#FF7043', '#78909C']; //
 
 // --- Константы для погоды ---
 const OPENWEATHER_API_KEY = '2d171b1ba6df8f45cb44e8d2cdbefaf7'; // <--- ЗАМЕНИТЕ НА ВАШ КЛЮЧ!
-const BREST_LAT = 52.0976;
+const BREST_LAT = 52.0976; // Фиксированные координаты Бреста
 const BREST_LON = 23.7341;
+const BREST_LOCATION_NAME = 'Брест, Беларусь';
 
 // --- Константы для кеширования ---
 const WEATHER_CACHE_KEY = 'weatherData';
@@ -268,88 +269,25 @@ const HomePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Загрузка данных погоды ---
+  // --- Загрузка погоды ---
   useEffect(() => {
-    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === 'ВАШ_КЛЮЧ_API_OpenWeatherMap_СЮДА') {
-      console.warn('Отсутствует ключ API OpenWeatherMap!');
-      setWeatherError('Отсутствует ключ API для погоды');
-      setLoadingWeather(false);
-      return;
-    }
-
     const loadWeatherData = async () => {
       setLoadingWeather(true);
       setWeatherError(null);
 
-      // Для тестирования в Telegram Mini App сразу устанавливаем тестовые данные
-      if (window.Telegram && window.Telegram.WebApp) {
-        console.log('Telegram WebApp: Устанавливаем тестовые значения для погоды');
-        const testWeatherData = [
-          {
-            label: "Сегодня утром",
-            temp: 19.2,
-            description: "Переменная облачность",
-            icon: "03d",
-            humidity: 70,
-            windSpeed: 3.5,
-            pressure: 1012,
-          },
-          {
-            label: "Сегодня днем",
-            temp: 25.7,
-            description: "Ясно",
-            icon: "01d",
-            humidity: 65,
-            windSpeed: 4.2,
-            pressure: 1011,
-          },
-          {
-            label: "Сегодня вечером",
-            temp: 20.4,
-            description: "Небольшая облачность",
-            icon: "02n",
-            humidity: 72,
-            windSpeed: 3.8,
-            pressure: 1010,
-          },
-          {
-            label: "Завтра утром",
-            temp: 18.5,
-            description: "Небольшой дождь",
-            icon: "10d",
-            humidity: 75,
-            windSpeed: 6.2,
-            pressure: 1010,
-          },
-          {
-            label: "Завтра днем", 
-            temp: 24.8,
-            description: "Гроза",
-            icon: "11d",
-            humidity: 82,
-            windSpeed: 8.1,
-            pressure: 1007,
-          },
-          {
-            label: "Завтра вечером",
-            temp: 19.6,
-            description: "Облачно с прояснениями",
-            icon: "04n",
-            humidity: 68,
-            windSpeed: 5.4,
-            pressure: 1011,
-          }
-        ];
-        
-        setWeatherData(testWeatherData);
+      // Проверяем наличие ключа API
+      if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === 'ВАШ_КЛЮЧ_API_OpenWeatherMap_СЮДА') {
+        console.warn('Отсутствует ключ API OpenWeatherMap!');
+        setWeatherError('Отсутствует ключ API для погоды');
         setLoadingWeather(false);
         return;
       }
 
       // Сначала проверяем кеш
-      const cachedWeatherData = getFromCache(WEATHER_CACHE_KEY, CACHE_DURATION.WEATHER);
+      const cacheKey = `${WEATHER_CACHE_KEY}_brest`;
+      const cachedWeatherData = getFromCache(cacheKey, CACHE_DURATION.WEATHER);
       if (cachedWeatherData) {
-        console.log('Загружены данные погоды из кеша');
+        console.log('Загружены данные погоды из кеша для Бреста');
         setWeatherData(cachedWeatherData);
         setLoadingWeather(false);
         return;
@@ -358,21 +296,17 @@ const HomePage = () => {
       // Если кеш пуст или устарел, делаем запрос к API
       try {
         const response = await fetch(
-
-          // `https://api.openweathermap.org/data/2.5/weather?q=Брест&lang=ru&appid=01ffc5c2eafbb0930b2eebf9e7f897f1&units=metric`
-
-        //  `https://api.openweathermap.org/data/2.5/forecast?appid=01ffc5c2eafbb0930b2eebf9e7f897f1&units=metric&q=Брест`
-
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${BREST_LAT}&lon=${BREST_LON}&appid=${OPENWEATHER_API_KEY}&units=metric`
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${BREST_LAT}&lon=${BREST_LON}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=ru`
         );
         if (!response.ok) {
           throw new Error(`Weather API error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log('Получены данные погоды из API для Бреста');
         const processedData = processWeatherData(data);
         
         // Сохраняем в кеш и устанавливаем в состояние
-        saveToCache(WEATHER_CACHE_KEY, processedData);
+        saveToCache(cacheKey, processedData);
         setWeatherData(processedData);
       } catch (e) {
         console.error("Failed to fetch weather:", e);
@@ -383,7 +317,7 @@ const HomePage = () => {
     };
 
     loadWeatherData();
-  }, []);
+  }, []); // Загружаем только при монтировании компонента
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -461,7 +395,7 @@ const HomePage = () => {
 
       <section className={`${styles.section} ${styles.weatherSection}`}>
         <h2 className={styles.sectionTitle}>Прогноз погоды</h2>
-        <p className={styles.sectionSubtitle}>Брест, Беларусь</p>
+        <p className={styles.sectionSubtitle}>{BREST_LOCATION_NAME}</p>
         {loadingWeather && <p>Загрузка погоды...</p>}
         {weatherError && <p style={{ color: 'red' }}>{weatherError}</p>}
         {!loadingWeather && !weatherError && (

@@ -56,11 +56,73 @@
   border: none;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
 .cameraButton:hover {
   background-color: #238a7d;
+}
+
+.cameraButton:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.cameraButton.loading {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.hiddenFileInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.messageContainer {
+  margin-top: 10px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+  max-width: 90%;
+  text-align: center;
+  animation: fadeInUp 0.3s ease;
+}
+
+.successMessage {
+  background-color: #e7f7ef;
+  color: #2a9d8f;
+  border-left: 3px solid #2a9d8f;
+}
+
+.errorMessage {
+  background-color: #ffebee;
+  color: #e53935;
+  border-left: 3px solid #e53935;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.messageContainer p {
+  margin: 0;
+  font-size: 14px;
 }
 
 .userName {
@@ -94,25 +156,26 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  padding: 12px 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
 }
 
-.infoItem:last-child {
-  margin-bottom: 0;
-  border-bottom: none;
-  padding-bottom: 0;
+.infoItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .infoIcon {
   font-size: 20px;
-  color: #2a9d8f;
-  margin-right: 15px;
-  min-width: 24px;
+  margin-right: 16px;
+  color: #555;
 }
 
 .telegramIcon {
-  color: #0088cc; /* Официальный цвет Telegram */
+  color: #0088cc;
 }
 
 .infoText {
@@ -120,16 +183,16 @@
 }
 
 .infoLabel {
-  font-size: 14px;
+  margin: 0;
+  font-size: 12px;
   color: #666;
-  margin: 0 0 5px 0;
+  margin-bottom: 3px;
 }
 
 .infoValue {
-  font-size: 16px;
-  color: #333;
   margin: 0;
   font-weight: 500;
+  color: #333;
 }
 
 /* Стили для секции с настройками */
@@ -167,11 +230,21 @@
 }
 
 .settingsButton:hover {
-  background-color: #f8f9fa;
+  background-color: #f2f6fc;
 }
 
 .logoutButton:hover {
-  background-color: #fff1f1;
+  background-color: #f9ecec;
+}
+
+/* Стиль для активной кнопки режима без сервера */
+.activeButton {
+  background-color: #fff3e0;
+  border-left: 3px solid #ff9800;
+}
+
+.activeButton:hover {
+  background-color: #ffe0b2;
 }
 
 /* Раздел "В разработке" */
@@ -200,4 +273,66 @@
   .userInfoSection, .settingsSection {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
+}
+
+/* Стили для статуса авторизации */
+.authStatusContainer {
+  margin: 20px auto;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90%;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.success {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #2e7d32;
+}
+
+.error {
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #d32f2f;
+}
+
+.warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  color: #ed6c02;
+}
+
+.statusIcon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.authStatusContainer p {
+  margin: 0;
+}
+
+/* Анимация для плавного появления уведомлений */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стили для секции с результатами API-запроса */
+.apiResponseSection {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 15px;
+  border: 1px solid #e9ecef;
+}
+
+.apiResponseSection .infoItem {
+  background-color: #f1f3f5;
+  border-left: 3px solid #6c757d;
 } 

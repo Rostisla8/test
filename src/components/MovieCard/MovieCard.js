@@ -1,9 +1,9 @@
-import React from 'react';
-import { FaMapMarkerAlt, FaClock, FaEllipsisV } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaMapMarkerAlt, FaClock, FaStar } from 'react-icons/fa';
 import styles from './MovieCard.module.css';
 
 // Принимает объект фильма со сгруппированными сеансами, флаг isExpanded и обработчик onToggleExpand
-const MovieCard = ({ movieGroup, isExpanded, onToggleExpand }) => {
+const MovieCard = ({ movieGroup, isExpanded, onToggleExpand, onToggleFavorite, favorites = [] }) => {
   // Добавляем проверку на случай, если movieGroup все же undefined
   if (!movieGroup || !movieGroup.movieData || !movieGroup.theaters) {
     // Можно вернуть null или какой-то placeholder/сообщение об ошибке
@@ -13,6 +13,9 @@ const MovieCard = ({ movieGroup, isExpanded, onToggleExpand }) => {
 
   const { movieData, theaters } = movieGroup;
   const fullImageUrl = movieData.image ? `https://kinobrest.by${movieData.image}` : null;
+  
+  // Проверяем, находится ли фильм в избранном
+  const isFavorite = favorites.some(fav => fav.title === movieData.title);
 
   return (
     // Оборачиваем всю карточку в div с onClick для раскрытия
@@ -21,13 +24,16 @@ const MovieCard = ({ movieGroup, isExpanded, onToggleExpand }) => {
         {/* Верхняя часть (всегда видима) */}
         <div className={styles.header}>
           <h3 className={styles.title}>{movieData.title}</h3>
-          {/* Предотвращаем всплытие клика с кнопки опций до карточки */}
+          {/* Предотвращаем всплытие клика с кнопки звезды до карточки */}
           <button 
-            className={styles.optionsButton} 
-            aria-label="Опции" 
-            onClick={(e) => { e.stopPropagation(); alert('Опции для фильма ' + movieData.title); }}
+            className={`${styles.favoriteButton} ${isFavorite ? styles.favorite : ''}`}
+            aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"} 
+            onClick={(e) => { 
+              e.stopPropagation();
+              onToggleFavorite && onToggleFavorite(movieData);
+            }}
           >
-            <FaEllipsisV color={'#666'} />
+            <FaStar color={isFavorite ? '#FFD700' : '#888'} />
           </button>
         </div>
 
