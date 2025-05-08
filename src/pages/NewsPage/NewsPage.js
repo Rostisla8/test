@@ -28,7 +28,7 @@ const NewsPage = () => {
         try {
           console.log('Отправляем запрос на сервер...');
           
-          const response = await fetch('https://cx21729.tw1.ru/api/users.php', {
+          const response = await fetch('https://cy35179.tw1.ru/api/users.php', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

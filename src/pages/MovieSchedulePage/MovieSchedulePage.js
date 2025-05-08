@@ -68,7 +68,7 @@ const MovieSchedulePage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('https://test.akshome.by/test2/$movies.json');
+        const response = await fetch('https://cy35179.tw1.ru/api/films/$movies.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

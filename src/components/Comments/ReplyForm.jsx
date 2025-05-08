@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../../pages/TrendsPage/TrendsPage.module.css';
+import styles from './Comments.module.css';
 
 const ReplyForm = ({ onSubmit, onCancel }) => {
   const [replyText, setReplyText] = useState('');
@@ -22,32 +22,34 @@ const ReplyForm = ({ onSubmit, onCancel }) => {
   };
 
   return (
-    <form className={styles.replyForm} onSubmit={handleSubmit}>
-      <textarea
+    <div className={styles.replyForm}>
+      <input
+        type="text"
         className={styles.replyInput}
         value={replyText}
         onChange={(e) => setReplyText(e.target.value)}
-        placeholder="Напишите ваш ответ..."
-        required
+        placeholder="Добавить ответ..."
+        disabled={isSubmitting}
       />
-      <div className={styles.replyFormButtons}>
-        <button 
-          type="submit" 
-          className={styles.submitButton}
-          disabled={isSubmitting || replyText.trim() === ''}
-        >
-          {isSubmitting ? 'Отправка...' : 'Ответить'}
-        </button>
+      <div className={styles.replyButtons}>
         <button 
           type="button" 
-          className={styles.cancelButton}
+          className={styles.cancelReply}
           onClick={onCancel}
           disabled={isSubmitting}
         >
           Отмена
         </button>
+        <button 
+          type="button" 
+          className={styles.submitReply}
+          onClick={handleSubmit}
+          disabled={isSubmitting || replyText.trim() === ''}
+        >
+          Отправить
+        </button>
       </div>
-    </form>
+    </div>
   );
 };
 

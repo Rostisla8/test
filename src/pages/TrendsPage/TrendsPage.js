@@ -3,6 +3,7 @@ import styles from './TrendsPage.module.css';
 import NewsHeader from '../../components/NewsHeader/NewsHeader';
 import { FaUser, FaPaperPlane, FaImage, FaSmile, FaVideo, FaTimes, FaHeart, FaComment, FaRetweet, FaReply, FaTrash, FaEdit } from 'react-icons/fa';
 import EditForm from '../../components/Comments/EditForm';
+import commentService from '../../services/commentService';
 
 const TrendsPage = () => {
   const [posts, setPosts] = useState([]);
@@ -31,7 +32,7 @@ const TrendsPage = () => {
   // Добавляем новые состояния для редактирования комментариев
   const [editingComment, setEditingComment] = useState(null); // ID комментария, который редактируется
   
-  const API_BASE_URL = 'https://cx21729.tw1.ru'; // Базовый URL API
+  const API_BASE_URL = 'https://cy35179.tw1.ru'; // Базовый URL API
   
   const fileInputRef = useRef(null);
   const observerRef = useRef(null); // Ref для IntersectionObserver
@@ -438,28 +439,32 @@ const TrendsPage = () => {
 
   // Функция для загрузки комментариев к посту
   const fetchComments = async (postId) => {
+    if (!postId) return;
+    
     setLoadingComments(true);
+    
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments?post_id=${postId}&limit=50&offset=0`);
+      // Получаем комментарии для поста через сервис
+      const response = await commentService.getComments(postId);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Комментарии к посту:', data);
-      
-      if (data.success) {
+      if (response.success) {
+        // Если ответ успешный, обновляем состояние комментариев
         setComments(prevComments => ({
           ...prevComments,
-          [postId]: data.comments || []
+          [postId]: response.comments.map(comment => ({
+            ...comment,
+            has_liked: comment.has_liked || false // Убедимся, что поле has_liked всегда определено
+          }))
         }));
       } else {
-        throw new Error('Запрос комментариев не удался');
+        throw new Error(response.message || 'Не удалось получить комментарии');
       }
     } catch (error) {
       console.error('Ошибка при загрузке комментариев:', error);
-      alert('Не удалось загрузить комментарии. Пожалуйста, попробуйте позже.');
+      setComments(prevComments => ({
+        ...prevComments,
+        [postId]: []
+      }));
     } finally {
       setLoadingComments(false);
     }
@@ -467,25 +472,31 @@ const TrendsPage = () => {
 
   // Функция для загрузки ответов на комментарий
   const fetchReplies = async (postId, commentId) => {
+    if (!postId || !commentId) return;
+    
+    // Устанавливаем состояние загрузки для этого конкретного комментария
     setLoadingReplies(prev => ({ ...prev, [commentId]: true }));
+    setExpandedReplies(prev => ({ ...prev, [commentId]: true }));
+    
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments?post_id=${postId}&parent_id=${commentId}&limit=50&offset=0`);
+      // Получаем ответы на комментарий через сервис
+      const response = await commentService.getReplies(postId, commentId);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Ответы на комментарий:', data);
-      
-      if (data.success) {
+      if (response.success) {
+        // Обновляем состояние комментариев, добавляя ответы к комментарию
         setComments(prevComments => {
           const postComments = [...(prevComments[postId] || [])];
           const commentIndex = postComments.findIndex(c => c.id === commentId);
           
           if (commentIndex !== -1) {
-            // Добавляем ответы к комментарию
-            postComments[commentIndex].replies = data.comments || [];
+            // Добавляем обработку поля has_liked для каждого ответа
+            postComments[commentIndex].replies = response.comments.map(reply => ({
+              ...reply,
+              has_liked: reply.has_liked || false // Убедимся, что поле has_liked всегда определено
+            }));
+            
+            // Устанавливаем количество ответов
+            postComments[commentIndex].reply_count = response.comments.length;
           }
           
           return {
@@ -493,15 +504,12 @@ const TrendsPage = () => {
             [postId]: postComments
           };
         });
-        
-        // Помечаем, что ответы раскрыты
-        setExpandedReplies(prev => ({ ...prev, [commentId]: true }));
       } else {
-        throw new Error('Запрос ответов не удался');
+        throw new Error(response.message || 'Не удалось получить ответы на комментарий');
       }
     } catch (error) {
       console.error('Ошибка при загрузке ответов на комментарий:', error);
-      alert('Не удалось загрузить ответы. Пожалуйста, попробуйте позже.');
+      setExpandedReplies(prev => ({ ...prev, [commentId]: false }));
     } finally {
       setLoadingReplies(prev => ({ ...prev, [commentId]: false }));
     }
@@ -518,30 +526,13 @@ const TrendsPage = () => {
     setSubmittingComment(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          telegram_id: currentUser.telegramId,
-          post_id: postId,
-          content: newCommentText
-        })
-      });
+      const response = await commentService.addComment(postId, currentUser.telegramId, newCommentText);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Комментарий добавлен:', data);
-      
-      if (data.success && data.comment) {
+      if (response.success && response.comment) {
         // Добавляем новый комментарий в список
         setComments(prevComments => {
           const postComments = [...(prevComments[postId] || [])];
-          postComments.push(data.comment);
+          postComments.push(response.comment);
           
           return {
             ...prevComments,
@@ -564,7 +555,7 @@ const TrendsPage = () => {
         // Очищаем поле ввода
         setNewCommentText('');
       } else {
-        throw new Error('Не удалось добавить комментарий');
+        throw new Error(response.message || 'Не удалось добавить комментарий');
       }
     } catch (error) {
       console.error('Ошибка при добавлении комментария:', error);
@@ -585,27 +576,9 @@ const TrendsPage = () => {
     setSubmittingComment(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          telegram_id: currentUser.telegramId,
-          post_id: postId,
-          parent_id: commentId,
-          content: newReplyText
-        })
-      });
+      const response = await commentService.addReply(postId, commentId, currentUser.telegramId, newReplyText);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Ответ на комментарий добавлен:', data);
-      
-      if (data.success && data.comment) {
+      if (response.success && response.comment) {
         setComments(prevComments => {
           const postComments = [...(prevComments[postId] || [])];
           const commentIndex = postComments.findIndex(c => c.id === commentId);
@@ -613,10 +586,10 @@ const TrendsPage = () => {
           if (commentIndex !== -1) {
             // Если у комментария уже есть ответы, добавляем к ним
             if (postComments[commentIndex].replies) {
-              postComments[commentIndex].replies.push(data.comment);
+              postComments[commentIndex].replies.push(response.comment);
             } else {
               // Если ответов еще нет, создаем массив с первым ответом
-              postComments[commentIndex].replies = [data.comment];
+              postComments[commentIndex].replies = [response.comment];
             }
             
             // Увеличиваем счетчик ответов
@@ -645,7 +618,7 @@ const TrendsPage = () => {
         setNewReplyText('');
         setReplyToComment(null);
       } else {
-        throw new Error('Не удалось добавить ответ на комментарий');
+        throw new Error(response.message || 'Не удалось добавить ответ на комментарий');
       }
     } catch (error) {
       console.error('Ошибка при добавлении ответа на комментарий:', error);
@@ -667,20 +640,11 @@ const TrendsPage = () => {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments?comment_id=${commentId}&telegram_id=${currentUser.telegramId}`, {
-        method: 'DELETE'
-      });
+      const response = await commentService.deleteComment(commentId, currentUser.telegramId);
       
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Комментарий удален:', data);
-      
-      if (data.success) {
+      if (response.success) {
         // Определяем, сколько комментариев было удалено (сам комментарий + ответы)
-        const deletedCount = 1 + (data.deleted_replies_count || 0);
+        const deletedCount = 1 + (response.deleted_replies_count || 0);
         
         if (isReply && parentId) {
           // Если это ответ на комментарий, удаляем его из списка ответов
@@ -723,7 +687,7 @@ const TrendsPage = () => {
           )
         );
       } else {
-        throw new Error('Не удалось удалить комментарий');
+        throw new Error(response.message || 'Не удалось удалить комментарий');
       }
     } catch (error) {
       console.error('Ошибка при удалении комментария:', error);
@@ -760,30 +724,110 @@ const TrendsPage = () => {
     }
     
     try {
-      // Для редактирования комментариев нет API, поэтому это заготовка
-      // В будущем здесь будет запрос к API для обновления комментария
+      const response = await commentService.updateComment(commentId, currentUser.telegramId, newContent);
       
-      // Обновляем комментарий локально
-      setComments(prevComments => {
-        const postComments = [...(prevComments[postId] || [])];
-        const commentIndex = postComments.findIndex(c => c.id === commentId);
+      if (response.success) {
+        setComments(prevComments => {
+          const postComments = [...(prevComments[postId] || [])];
+          const commentIndex = postComments.findIndex(c => c.id === commentId);
+          
+          if (commentIndex !== -1) {
+            postComments[commentIndex].content = newContent;
+            postComments[commentIndex].updated_at = new Date().toISOString();
+          }
+          
+          return {
+            ...prevComments,
+            [postId]: postComments
+          };
+        });
         
-        if (commentIndex !== -1) {
-          postComments[commentIndex].content = newContent;
-          postComments[commentIndex].updated_at = new Date().toISOString();
-        }
-        
-        return {
-          ...prevComments,
-          [postId]: postComments
-        };
-      });
-      
-      // Сбрасываем состояние редактирования
-      setEditingComment(null);
+        // Сбрасываем состояние редактирования
+        setEditingComment(null);
+      } else {
+        throw new Error(response.message || 'Не удалось обновить комментарий');
+      }
     } catch (error) {
       console.error('Ошибка при обновлении комментария:', error);
       alert('Произошла ошибка при обновлении комментария. Пожалуйста, попробуйте еще раз.');
+    }
+  };
+
+  // Функция для лайка комментария 
+  const likeComment = async (commentId, postId) => {
+    if (!currentUser.telegramId) {
+      alert('Не удалось идентифицировать пользователя Telegram. Пожалуйста, обновите страницу.');
+      return;
+    }
+
+    try {
+      const response = await commentService.likeComment(commentId, currentUser.telegramId);
+      
+      if (response.success) {
+        // Обновляем состояние комментариев после успешного лайка
+        setComments(prevComments => {
+          const postComments = [...(prevComments[postId] || [])];
+          const updatedComments = postComments.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                has_liked: true,
+                like_count: (comment.like_count || 0) + 1
+              };
+            }
+            return comment;
+          });
+          
+          return {
+            ...prevComments,
+            [postId]: updatedComments
+          };
+        });
+      } else {
+        throw new Error(response.message || 'Не удалось поставить лайк комментарию');
+      }
+    } catch (error) {
+      console.error('Ошибка при лайке комментария:', error);
+      alert('Произошла ошибка при лайке комментария. Пожалуйста, попробуйте еще раз.');
+    }
+  };
+
+  // Функция для снятия лайка с комментария
+  const unlikeComment = async (commentId, postId) => {
+    if (!currentUser.telegramId) {
+      alert('Не удалось идентифицировать пользователя Telegram. Пожалуйста, обновите страницу.');
+      return;
+    }
+
+    try {
+      const response = await commentService.unlikeComment(commentId, currentUser.telegramId);
+      
+      if (response.success) {
+        // Обновляем состояние комментариев после успешного снятия лайка
+        setComments(prevComments => {
+          const postComments = [...(prevComments[postId] || [])];
+          const updatedComments = postComments.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                has_liked: false,
+                like_count: Math.max((comment.like_count || 0) - 1, 0)
+              };
+            }
+            return comment;
+          });
+          
+          return {
+            ...prevComments,
+            [postId]: updatedComments
+          };
+        });
+      } else {
+        throw new Error(response.message || 'Не удалось убрать лайк комментария');
+      }
+    } catch (error) {
+      console.error('Ошибка при снятии лайка комментария:', error);
+      alert('Произошла ошибка при снятии лайка комментария. Пожалуйста, попробуйте еще раз.');
     }
   };
 
@@ -951,8 +995,6 @@ const TrendsPage = () => {
                 {/* Секция комментариев */}
                 {expandedComments === post.id && (
                   <div className={styles.commentsSection}>
-                    <h3 className={styles.commentsHeader}>Комментарии</h3>
-                    
                     {/* Загрузка комментариев */}
                     {loadingComments ? (
                       <p className={styles.commentsLoading}>Загрузка комментариев...</p>
@@ -961,52 +1003,37 @@ const TrendsPage = () => {
                         {/* Список комментариев */}
                         {comments[post.id] && comments[post.id].length > 0 ? (
                           <div className={styles.commentsList}>
+                            {/* Показываем количество комментариев */}
+                            <div className={styles.commentsCount}>
+                              {comments[post.id].length > 2 ? (
+                                <button 
+                                  className={styles.viewAllComments}
+                                  onClick={() => setExpandedComments(null)} // Временно просто закрываем комментарии
+                                >
+                                  Просмотреть все комментарии ({comments[post.id].length})
+                                </button>
+                              ) : (
+                                <span className={styles.commentsCounter}>{comments[post.id].length} комментариев</span>
+                              )}
+                            </div>
+
+                            {/* Показываем комментарии */}
                             {comments[post.id].map(comment => (
                               <div key={comment.id} className={styles.commentItem}>
-                                {/* Аватар и данные автора комментария */}
-                                <div className={styles.commentHeader}>
-                                  <div className={styles.commentAvatar}>
-                                    {comment.photo_url ? (
-                                      <img src={comment.photo_url} alt={comment.first_name} />
-                                    ) : (
-                                      <FaUser size={14} color="#666" />
-                                    )}
-                                  </div>
-                                  <div className={styles.commentAuthor}>
-                                    <span className={styles.commentAuthorName}>
-                                      {comment.first_name} {comment.last_name || ''}
-                                    </span>
-                                    <span className={styles.commentTime}>
-                                      {formatPostTime(comment.created_at)}
-                                    </span>
-                                  </div>
-                                  
-                                  {/* Кнопка удаления для своих комментариев */}
-                                  {comment.telegram_id === currentUser.telegramId && (
-                                    <button 
-                                      className={styles.deleteCommentBtn}
-                                      onClick={() => deleteComment(comment.id, post.id)}
-                                    >
-                                      <FaTrash size={12} />
-                                    </button>
-                                  )}
+                                <div className={styles.commentMain}>
+                                  <span className={styles.commentAuthorName}>
+                                    {comment.first_name || 'Пользователь'}
+                                  </span>
+                                  <span className={styles.commentText}>
+                                    {comment.content}
+                                  </span>
                                 </div>
                                 
-                                {/* Текст комментария */}
-                                <div className={styles.commentContent}>
-                                  {editingComment === comment.id ? (
-                                    <EditForm 
-                                      initialText={comment.content}
-                                      onSubmit={(editedText) => handleSaveEdit(comment.id, post.id, editedText)}
-                                      onCancel={handleCancelEdit}
-                                    />
-                                  ) : (
-                                    <p>{comment.content}</p>
-                                  )}
-                                </div>
-                                
-                                {/* Кнопки действий для комментария */}
                                 <div className={styles.commentActions}>
+                                  <span className={styles.commentTime}>
+                                    {formatPostTime(comment.created_at)}
+                                  </span>
+                                  
                                   <button 
                                     className={styles.replyButton}
                                     onClick={() => {
@@ -1014,29 +1041,25 @@ const TrendsPage = () => {
                                       setNewReplyText('');
                                     }}
                                   >
-                                    <FaReply size={12} /> Ответить
+                                    Ответить
                                   </button>
                                   
-                                  {/* Показываем кнопку просмотра ответов, если они есть */}
-                                  {comment.reply_count > 0 && (
-                                    <button 
-                                      className={styles.viewRepliesButton}
-                                      onClick={() => toggleReplies(post.id, comment.id)}
-                                    >
-                                      {expandedReplies[comment.id] 
-                                        ? 'Скрыть ответы'
-                                        : `Показать ответы (${comment.reply_count})`}
-                                    </button>
-                                  )}
+                                  <button 
+                                    className={`${styles.likeButton} ${comment.has_liked ? styles.liked : ''}`}
+                                    onClick={() => comment.has_liked 
+                                      ? unlikeComment(comment.id, post.id) 
+                                      : likeComment(comment.id, post.id)
+                                    }
+                                  >
+                                    ♥ {comment.like_count > 0 && comment.like_count}
+                                  </button>
                                   
-                                  {/* Добавляем кнопку редактирования для своих комментариев */}
                                   {comment.telegram_id === currentUser.telegramId && (
                                     <button 
-                                      className={styles.editCommentBtn}
-                                      onClick={() => handleEditComment(comment.id, post.id)}
-                                      disabled={editingComment === comment.id}
+                                      className={styles.deleteCommentBtn}
+                                      onClick={() => deleteComment(comment.id, post.id)}
                                     >
-                                      <FaEdit size={12} /> Редактировать
+                                      Удалить
                                     </button>
                                   )}
                                 </div>
@@ -1044,12 +1067,12 @@ const TrendsPage = () => {
                                 {/* Форма для ответа на комментарий */}
                                 {replyToComment === comment.id && (
                                   <div className={styles.replyForm}>
-                                    <textarea
+                                    <input
+                                      type="text"
                                       className={styles.replyInput}
                                       placeholder="Напишите ответ..."
                                       value={newReplyText}
                                       onChange={(e) => setNewReplyText(e.target.value)}
-                                      rows={2}
                                     />
                                     <div className={styles.replyFormActions}>
                                       <button 
@@ -1066,76 +1089,67 @@ const TrendsPage = () => {
                                         onClick={() => submitReply(post.id, comment.id)}
                                         disabled={!newReplyText.trim() || submittingComment}
                                       >
-                                        {submittingComment ? 'Отправка...' : 'Ответить'}
+                                        {submittingComment ? '...' : 'Ответить'}
                                       </button>
                                     </div>
                                   </div>
                                 )}
                                 
                                 {/* Ответы на комментарий */}
-                                {expandedReplies[comment.id] && comment.replies && (
-                                  <div className={styles.repliesList}>
-                                    {loadingReplies[comment.id] ? (
-                                      <p className={styles.repliesLoading}>Загрузка ответов...</p>
-                                    ) : (
-                                      comment.replies.map(reply => (
-                                        <div key={reply.id} className={styles.replyItem}>
-                                          {/* Аватар и данные автора ответа */}
-                                          <div className={styles.commentHeader}>
-                                            <div className={styles.commentAvatar}>
-                                              {reply.photo_url ? (
-                                                <img src={reply.photo_url} alt={reply.first_name} />
-                                              ) : (
-                                                <FaUser size={12} color="#666" />
-                                              )}
+                                {comment.reply_count > 0 && (
+                                  <div className={styles.repliesInfo}>
+                                    <button 
+                                      className={styles.viewRepliesButton}
+                                      onClick={() => toggleReplies(post.id, comment.id)}
+                                    >
+                                      {expandedReplies[comment.id] 
+                                        ? 'Скрыть ответы'
+                                        : `Показать ответы (${comment.reply_count})`}
+                                    </button>
+                                    
+                                    {expandedReplies[comment.id] && comment.replies && (
+                                      <div className={styles.repliesList}>
+                                        {loadingReplies[comment.id] ? (
+                                          <p className={styles.repliesLoading}>Загрузка ответов...</p>
+                                        ) : (
+                                          comment.replies.map(reply => (
+                                            <div key={reply.id} className={styles.replyItem}>
+                                              <div className={styles.commentMain}>
+                                                <span className={styles.commentAuthorName}>
+                                                  {reply.first_name || 'Пользователь'}
+                                                </span>
+                                                <span className={styles.commentText}>
+                                                  {reply.content}
+                                                </span>
+                                              </div>
+                                              <div className={styles.commentActions}>
+                                                <span className={styles.commentTime}>
+                                                  {formatPostTime(reply.created_at)}
+                                                </span>
+                                                
+                                                <button 
+                                                  className={`${styles.likeButton} ${reply.has_liked ? styles.liked : ''}`}
+                                                  onClick={() => reply.has_liked 
+                                                    ? unlikeComment(reply.id, post.id) 
+                                                    : likeComment(reply.id, post.id)
+                                                  }
+                                                >
+                                                  ♥ {reply.like_count > 0 && reply.like_count}
+                                                </button>
+                                                
+                                                {reply.telegram_id === currentUser.telegramId && (
+                                                  <button 
+                                                    className={styles.deleteCommentBtn}
+                                                    onClick={() => deleteComment(reply.id, post.id, true, comment.id)}
+                                                  >
+                                                    Удалить
+                                                  </button>
+                                                )}
+                                              </div>
                                             </div>
-                                            <div className={styles.commentAuthor}>
-                                              <span className={styles.commentAuthorName}>
-                                                {reply.first_name} {reply.last_name || ''}
-                                              </span>
-                                              <span className={styles.commentTime}>
-                                                {formatPostTime(reply.created_at)}
-                                              </span>
-                                            </div>
-                                            
-                                            {/* Кнопка удаления для своих ответов */}
-                                            {reply.telegram_id === currentUser.telegramId && (
-                                              <button 
-                                                className={styles.deleteCommentBtn}
-                                                onClick={() => deleteComment(reply.id, post.id, true, comment.id)}
-                                              >
-                                                <FaTrash size={12} />
-                                              </button>
-                                            )}
-                                          </div>
-                                          
-                                          {/* Текст ответа */}
-                                          <div className={styles.commentContent}>
-                                            {editingComment === reply.id ? (
-                                              <EditForm 
-                                                initialText={reply.content}
-                                                onSubmit={(editedText) => handleSaveEdit(reply.id, post.id, editedText)}
-                                                onCancel={handleCancelEdit}
-                                              />
-                                            ) : (
-                                              <p>{reply.content}</p>
-                                            )}
-                                          </div>
-                                          
-                                          {/* Добавляем кнопку редактирования для своих ответов */}
-                                          {reply.telegram_id === currentUser.telegramId && (
-                                            <div className={styles.replyActions}>
-                                              <button 
-                                                className={styles.editCommentBtn}
-                                                onClick={() => handleEditComment(reply.id, post.id)}
-                                                disabled={editingComment === reply.id}
-                                              >
-                                                <FaEdit size={12} /> Редактировать
-                                              </button>
-                                            </div>
-                                          )}
-                                        </div>
-                                      ))
+                                          ))
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                 )}
@@ -1148,20 +1162,20 @@ const TrendsPage = () => {
                                                 
                         {/* Форма добавления нового комментария */}
                         <div className={styles.addCommentForm}>
-                          <textarea
+                          <input
+                            type="text"
                             className={styles.commentInput}
-                            placeholder="Напишите комментарий..."
+                            placeholder="Добавить комментарий..."
                             value={newCommentText}
                             onChange={(e) => setNewCommentText(e.target.value)}
                             ref={commentInputRef}
-                            rows={3}
                           />
                           <button 
-                            className={styles.submitCommentBtn}
+                            className={styles.postCommentBtn}
                             onClick={() => submitComment(post.id)}
                             disabled={!newCommentText.trim() || submittingComment}
                           >
-                            {submittingComment ? 'Отправка...' : 'Комментировать'}
+                            {submittingComment ? '...' : 'Опубликовать'}
                           </button>
                         </div>
                       </>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import CommentItem from './CommentItem';
-import styles from '../../pages/TrendsPage/TrendsPage.module.css';
+import styles from './Comments.module.css';
 import { useAuthContext } from '../../contexts/AuthContext';
+import commentService from '../../services/commentService';
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const Comments = ({ postId }) => {
   const [comments, setComments] = useState([]);
@@ -13,258 +15,205 @@ const Comments = ({ postId }) => {
   // Загрузка комментариев
   useEffect(() => {
     const fetchComments = async () => {
+      if (!postId) return;
+      
       setIsLoading(true);
       setError(null);
       
       try {
-        // Здесь будет запрос к API для получения комментариев
-        // Временное решение с демо-данными
-        const demoComments = [
-          {
-            id: '1',
-            text: 'Отличная статья! Очень познавательно.',
-            createdAt: new Date(Date.now() - 3600000).toISOString(),
-            user: {
-              id: '101',
-              name: 'Алексей Петров',
-              avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-            },
-            likes: 5,
-            likedBy: [],
-            replies: [
-              {
-                id: '1-1',
-                text: 'Полностью согласен с вами!',
-                createdAt: new Date(Date.now() - 1800000).toISOString(),
-                user: {
-                  id: '102',
-                  name: 'Мария Иванова',
-                  avatar: 'https://randomuser.me/api/portraits/women/1.jpg'
-                },
-                likes: 2,
-                likedBy: []
-              }
-            ]
-          },
-          {
-            id: '2',
-            text: 'Интересный подход к этой теме, но я не совсем согласен с некоторыми пунктами.',
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-            user: {
-              id: '103',
-              name: 'Сергей Сидоров',
-              avatar: 'https://randomuser.me/api/portraits/men/2.jpg'
-            },
-            likes: 3,
-            likedBy: [],
-            replies: []
-          }
-        ];
-        
-        setComments(demoComments);
+        const response = await commentService.getComments(postId);
+        if (response.success) {
+          setComments(response.comments || []);
+        } else {
+          throw new Error(response.message || 'Не удалось загрузить комментарии');
+        }
       } catch (err) {
-        console.error('Failed to fetch comments:', err);
-        setError('Не удалось загрузить комментарии. Пожалуйста, попробуйте позже.');
+        console.error('Ошибка при загрузке комментариев:', err);
+        setError('Не удалось загрузить комментарии');
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (postId) {
-      fetchComments();
-    }
+    fetchComments();
   }, [postId]);
 
   // Добавление нового комментария
   const handleAddComment = async (e) => {
     e.preventDefault();
     
-    if (!newComment.trim() || !currentUser) return;
+    if (!newComment.trim() || !currentUser?.telegramId) return;
     
     setIsLoading(true);
     
     try {
-      // Здесь будет запрос к API для добавления комментария
-      // Временное решение для демонстрации
-      const newCommentData = {
-        id: `comment-${Date.now()}`,
-        text: newComment,
-        createdAt: new Date().toISOString(),
-        user: {
-          id: currentUser.id,
-          name: currentUser.displayName || 'Пользователь',
-          avatar: currentUser.photoURL || 'https://randomuser.me/api/portraits/lego/1.jpg'
-        },
-        likes: 0,
-        likedBy: [],
-        replies: []
-      };
-      
-      setComments(prevComments => [newCommentData, ...prevComments]);
-      setNewComment('');
+      const response = await commentService.addComment(postId, currentUser.telegramId, newComment);
+      if (response.success) {
+        setComments(prevComments => [response.comment, ...prevComments]);
+        setNewComment('');
+      } else {
+        throw new Error(response.message || 'Не удалось добавить комментарий');
+      }
     } catch (err) {
-      console.error('Failed to add comment:', err);
-      setError('Не удалось добавить комментарий. Пожалуйста, попробуйте позже.');
+      console.error('Ошибка при добавлении комментария:', err);
+      setError('Не удалось добавить комментарий');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Обработчики для действий с комментариями
-  const handleDeleteComment = async (commentId) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот комментарий?')) {
+  // Обработка лайка на комментарий
+  const handleLike = async (commentId) => {
+    if (!currentUser?.telegramId) return;
+    
+    try {
+      const comment = comments.find(c => c.id === commentId);
+      const isLiked = comment?.has_liked;
+      
+      // Оптимистичное обновление UI
+      setComments(prevComments => 
+        prevComments.map(comment => 
+          comment.id === commentId 
+            ? { 
+                ...comment, 
+                has_liked: !isLiked,
+                like_count: isLiked ? Math.max(0, (comment.like_count || 0) - 1) : (comment.like_count || 0) + 1
+              } 
+            : comment
+        )
+      );
+      
+      // Отправка запроса на сервер
+      if (isLiked) {
+        await commentService.unlikeComment(commentId, currentUser.telegramId);
+      } else {
+        await commentService.likeComment(commentId, currentUser.telegramId);
+      }
+    } catch (err) {
+      console.error('Ошибка при лайке комментария:', err);
+      // Если произошла ошибка, откатываем изменения
+      const comment = comments.find(c => c.id === commentId);
+      const isLiked = comment?.has_liked;
+      
+      setComments(prevComments => 
+        prevComments.map(comment => 
+          comment.id === commentId 
+            ? { 
+                ...comment, 
+                has_liked: isLiked,
+                like_count: comment.like_count
+              } 
+            : comment
+        )
+      );
+    }
+  };
+
+  const formatTimeAgo = (timestamp) => {
+    if (!timestamp) return '';
+    try {
+      const distanceStr = formatDistanceToNow(new Date(timestamp), { locale: ru });
+      return distanceStr.replace('около ', '');
+    } catch (err) {
+      return '';
+    }
+  };
+
+  // Удаление комментария
+  const handleDelete = async (commentId) => {
+    if (!currentUser?.telegramId) return;
+    
+    if (window.confirm('Удалить этот комментарий?')) {
       setIsLoading(true);
       
       try {
-        // Здесь будет запрос к API для удаления комментария
-        // Временное решение для демонстрации
-        setComments(prevComments => 
-          prevComments.filter(comment => comment.id !== commentId)
-        );
+        const response = await commentService.deleteComment(commentId, currentUser.telegramId);
+        if (response.success) {
+          setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+        } else {
+          throw new Error(response.message || 'Не удалось удалить комментарий');
+        }
       } catch (err) {
-        console.error('Failed to delete comment:', err);
-        setError('Не удалось удалить комментарий. Пожалуйста, попробуйте позже.');
+        console.error('Ошибка при удалении комментария:', err);
+        setError('Не удалось удалить комментарий');
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const handleEditComment = async (commentId, newText) => {
-    setIsLoading(true);
-    
-    try {
-      // Здесь будет запрос к API для редактирования комментария
-      // Временное решение для демонстрации
-      setComments(prevComments => 
-        prevComments.map(comment => 
-          comment.id === commentId 
-            ? { ...comment, text: newText, updatedAt: new Date().toISOString() } 
-            : comment
-        )
-      );
-    } catch (err) {
-      console.error('Failed to edit comment:', err);
-      setError('Не удалось отредактировать комментарий. Пожалуйста, попробуйте позже.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLikeComment = async (commentId) => {
-    if (!currentUser) return;
-    
-    try {
-      // Здесь будет запрос к API для добавления/удаления лайка
-      // Временное решение для демонстрации
-      setComments(prevComments => 
-        prevComments.map(comment => {
-          if (comment.id === commentId) {
-            const userLiked = comment.likedBy.includes(currentUser.id);
-            return {
-              ...comment,
-              likes: userLiked ? comment.likes - 1 : comment.likes + 1,
-              likedBy: userLiked 
-                ? comment.likedBy.filter(id => id !== currentUser.id)
-                : [...comment.likedBy, currentUser.id]
-            };
-          }
-          return comment;
-        })
-      );
-    } catch (err) {
-      console.error('Failed to like comment:', err);
-      setError('Не удалось поставить лайк. Пожалуйста, попробуйте позже.');
-    }
-  };
-
-  const handleAddReply = async (commentId, replyText) => {
-    if (!currentUser) return;
-    
-    setIsLoading(true);
-    
-    try {
-      // Здесь будет запрос к API для добавления ответа
-      // Временное решение для демонстрации
-      const newReply = {
-        id: `reply-${Date.now()}`,
-        text: replyText,
-        createdAt: new Date().toISOString(),
-        user: {
-          id: currentUser.id,
-          name: currentUser.displayName || 'Пользователь',
-          avatar: currentUser.photoURL || 'https://randomuser.me/api/portraits/lego/1.jpg'
-        },
-        likes: 0,
-        likedBy: []
-      };
-      
-      setComments(prevComments => 
-        prevComments.map(comment => 
-          comment.id === commentId 
-            ? { ...comment, replies: [...comment.replies, newReply] } 
-            : comment
-        )
-      );
-    } catch (err) {
-      console.error('Failed to add reply:', err);
-      setError('Не удалось добавить ответ. Пожалуйста, попробуйте позже.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Показать все комментарии
+  const showAllComments = () => {
+    // Здесь можно реализовать загрузку всех комментариев, 
+    // если их много и они загружаются постранично
+  }
 
   return (
-    <div className={styles.commentsContainer}>
-      <h3 className={styles.commentsTitle}>Комментарии ({comments.length})</h3>
-      
-      {error && <div className={styles.errorMessage}>{error}</div>}
-      
-      {currentUser ? (
-        <form className={styles.commentForm} onSubmit={handleAddComment}>
-          <textarea
-            className={styles.commentInput}
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Напишите ваш комментарий..."
-            disabled={isLoading}
-            required
-          />
-          <button 
-            type="submit" 
-            className={styles.submitButton}
-            disabled={isLoading || !newComment.trim()}
-          >
-            {isLoading ? 'Отправка...' : 'Отправить'}
-          </button>
-        </form>
-      ) : (
-        <div className={styles.loginPrompt}>
-          Войдите, чтобы оставить комментарий
+    <div className={styles.comments}>
+      {/* Количество комментариев */}
+      {comments.length > 0 && (
+        <div className={styles.commentsCount}>
+          {comments.length > 2 ? (
+            <button className={styles.viewAllComments} onClick={showAllComments}>
+              Просмотреть все комментарии ({comments.length})
+            </button>
+          ) : (
+            <span className={styles.commentsCounter}>{comments.length} комментариев</span>
+          )}
         </div>
       )}
       
+      {/* Список комментариев (показываем только 2 последних) */}
       {isLoading && comments.length === 0 ? (
         <div className={styles.loading}>Загрузка комментариев...</div>
-      ) : comments.length > 0 ? (
+      ) : (
         <div className={styles.commentsList}>
-          {comments.map(comment => (
-            <CommentItem 
-              key={comment.id}
-              comment={comment}
-              currentUser={currentUser}
-              postId={postId}
-              onDeleteComment={handleDeleteComment}
-              onEditComment={handleEditComment}
-              onLikeComment={handleLikeComment}
-              onAddReply={handleAddReply}
-            />
+          {comments.slice(0, 2).map(comment => (
+            <div key={comment.id} className={styles.commentItem}>
+              <span className={styles.username}>{comment.first_name || 'Пользователь'}</span>
+              <span className={styles.commentText}>{comment.content}</span>
+              {comment.like_count > 0 && (
+                <button 
+                  className={`${styles.likeButton} ${comment.has_liked ? styles.liked : ''}`}
+                  onClick={() => handleLike(comment.id)}
+                >
+                  ♥
+                </button>
+              )}
+            </div>
           ))}
         </div>
-      ) : (
-        <div className={styles.noComments}>
-          Комментариев пока нет. Будьте первым!
-        </div>
+      )}
+      
+      {/* Время публикации */}
+      <div className={styles.postTime}>
+        {comments.length > 0 && comments[0]?.created_at && (
+          <span>{formatTimeAgo(comments[0].created_at)}</span>
+        )}
+      </div>
+      
+      {/* Сообщение об ошибке */}
+      {error && <div className={styles.error}>{error}</div>}
+      
+      {/* Форма добавления комментария */}
+      {currentUser?.telegramId && (
+        <form className={styles.commentForm} onSubmit={handleAddComment}>
+          <input
+            type="text"
+            className={styles.commentInput}
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Добавить комментарий..."
+            disabled={isLoading}
+          />
+          <button 
+            type="submit" 
+            className={styles.postButton}
+            disabled={isLoading || !newComment.trim()}
+          >
+            Опубликовать
+          </button>
+        </form>
       )}
     </div>
   );

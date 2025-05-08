@@ -1,36 +1,38 @@
+/* Базовые цвета из дизайна определены глобально в index.css */
+
 .container {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
   padding: 10px;
-  padding-bottom: 100px; /* Увеличиваем отступ для BottomNav */
-  background-color: #f4f6f8; /* Светлый фон для основной части */
+  padding-bottom: 100px; /* Для BottomNav */
+  background-color: var(--color-01);
   box-sizing: border-box;
 }
 
 .content {
-  margin-top: 20px;
+  margin-top: var(--spacing-md);
 }
 
 /* Стили для формы создания поста */
 .createPostContainer {
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 15px;
-  margin-bottom: 20px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 .postHeader {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .postAvatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background-color: #e5e7eb;
+  border-radius: var(--radius-round);
+  background-color: var(--color-02);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,19 +46,19 @@
 .postInput {
   width: 100%;
   min-height: 60px;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-light-gray);
+  border-radius: var(--radius-sm);
   resize: none;
   font-size: 15px;
   box-sizing: border-box;
-  margin-bottom: 10px;
-  font-family: inherit;
+  margin-bottom: var(--spacing-md);
+  font-family: 'Encode Sans', sans-serif;
 }
 
 .postInput:focus {
   outline: none;
-  border-color: #2a9d8f;
+  border-color: var(--color-accent);
 }
 
 .postActions {
@@ -67,45 +69,44 @@
 
 .postAttachments {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-sm);
 }
 
 .attachButton {
   background: none;
   border: none;
-  color: #666;
+  color: var(--color-medium-gray);
   cursor: pointer;
   font-size: 18px;
-  padding: 5px;
+  padding: var(--spacing-xs);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .attachButton:hover {
-  color: #2a9d8f;
+  color: var(--color-accent);
 }
 
 .postSubmit {
-  background-color: #2a9d8f;
-  color: white;
+  background-color: var(--color-black);
+  color: var(--color-white);
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-round);
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .postSubmit:hover {
-  background-color: #238a7d;
+  background-color: var(--color-accent-light);
 }
 
 .postSubmit:disabled {
-  background-color: #cccccc;
+  background-color: var(--color-light-gray);
   cursor: not-allowed;
 }
 
@@ -113,31 +114,31 @@
 .postsContainer {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-md);
 }
 
 .post {
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 15px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
 }
 
 .postAuthorInfo {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
 }
 
 .authorAvatar {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  background-color: #e5e7eb;
+  border-radius: var(--radius-round);
+  background-color: var(--color-02);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 10px;
+  margin-right: var(--spacing-md);
   overflow: hidden;
 }
 
@@ -155,12 +156,12 @@
   font-weight: 600;
   font-size: 15px;
   margin: 0;
-  color: #333;
+  color: var(--color-black);
 }
 
 .postTime {
   font-size: 13px;
-  color: #888;
+  color: var(--color-medium-gray);
   margin: 0;
 }
 
@@ -168,13 +169,13 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: var(--color-medium-gray);
   font-size: 16px;
-  padding: 5px;
+  padding: var(--spacing-xs);
 }
 
 .postContent {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .postText {
@@ -183,13 +184,14 @@
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+  color: var(--color-black);
 }
 
 .postFooter {
   display: flex;
-  gap: 15px;
-  border-top: 1px solid #f1f1f1;
-  padding-top: 10px;
+  gap: var(--spacing-lg);
+  border-top: 1px solid var(--color-01);
+  padding-top: var(--spacing-md);
 }
 
 .postAction {
@@ -199,39 +201,35 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: var(--color-medium-gray);
   font-size: 14px;
   padding: 5px 10px;
   border-radius: 4px;
 }
 
 .postAction:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.postActionActive {
-  /* Убираем изменение цвета при активации кнопки комментариев */
+  background-color: var(--color-01);
 }
 
 /* Стили для пустого состояния */
 .emptyState {
-  background-color: white;
-  padding: 30px 20px;
-  border-radius: 15px;
+  background-color: var(--color-white);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border-radius: var(--radius-md);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--spacing-lg);
 }
 
 .emptyState h2 {
   font-size: 20px;
-  color: #333;
-  margin: 0 0 10px 0;
+  color: var(--color-black);
+  margin: 0 0 var(--spacing-md) 0;
 }
 
 .emptyState p {
   font-size: 16px;
-  color: #888;
+  color: var(--color-medium-gray);
   margin: 0;
 }
 
@@ -248,8 +246,8 @@
 /* Стили для превью изображения */
 .imagePreviewContainer {
   position: relative;
-  margin-bottom: 15px;
-  border-radius: 10px;
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   max-height: 300px;
 }
@@ -258,34 +256,29 @@
   width: 100%;
   object-fit: contain;
   max-height: 300px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 }
 
 .removeImageBtn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: var(--color-white);
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-round);
   width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.removeImageBtn:hover {
-  background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* Стили для изображения в посте */
 .postImageContainer {
-  margin-top: 15px;
-  border-radius: 10px;
+  margin-top: var(--spacing-lg);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   max-height: 350px;
 }
@@ -294,60 +287,59 @@
   width: 100%;
   object-fit: contain;
   max-height: 350px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 }
 
 /* Стили для состояния загрузки */
 .loadingState {
-  background-color: white;
-  padding: 20px;
-  border-radius: 15px;
+  background-color: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
 }
 
 .loadingState p {
   font-size: 16px;
-  color: #666;
+  color: var(--color-medium-gray);
   margin: 0;
 }
 
 /* Стили для состояния ошибки */
 .errorState {
-  background-color: white;
-  padding: 20px;
-  border-radius: 15px;
+  background-color: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
   border-left: 4px solid #e74c3c;
 }
 
 .errorState p {
   font-size: 16px;
   color: #e74c3c;
-  margin: 0 0 15px 0;
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .retryButton {
-  background-color: #2a9d8f;
-  color: white;
+  background-color: var(--color-black);
+  color: var(--color-white);
   border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .retryButton:hover {
-  background-color: #238a7d;
+  background-color: var(--color-accent-light);
 }
 
 /* Стили для триггера загрузки дополнительных постов */
 .loadMoreTrigger {
-  padding: 20px;
+  padding: var(--spacing-lg);
   text-align: center;
   width: 100%;
   height: 60px;
@@ -358,7 +350,7 @@
 
 .loadingMoreText {
   font-size: 14px;
-  color: #666;
+  color: var(--color-medium-gray);
   margin: 0;
   animation: pulse 1.5s infinite ease-in-out;
 }
@@ -378,7 +370,7 @@
 /* Стили иконок */
 .heartIcon {
   font-size: 18px;
-  color: #666;
+  color: var(--color-medium-gray);
 }
 
 .heartIconLiked {
@@ -389,291 +381,255 @@
 .commentIcon,
 .retweetIcon {
   font-size: 18px;
-  color: #666;
+  color: var(--color-medium-gray);
 }
 
 /* Стили для секции комментариев */
 .commentsSection {
-  margin-top: 15px;
-  padding: 15px;
-  border-top: 1px solid #e1e8ed;
-  background-color: #f8f9fa;
-  border-radius: 0 0 12px 12px;
+  border-top: 1px solid var(--color-01);
+  padding-top: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
-.commentsHeader {
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: #14171a;
+/* Счетчик комментариев */
+.commentsCount {
+  margin-bottom: var(--spacing-md);
+  color: var(--color-medium-gray);
 }
 
-.commentsLoading, .repliesLoading {
-  text-align: center;
-  color: #657786;
-  padding: 10px;
+.viewAllComments {
+  background: none;
+  border: none;
+  color: var(--color-medium-gray);
+  font-size: 14px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.commentsCounter {
+  color: var(--color-medium-gray);
   font-size: 14px;
 }
 
-.noComments {
-  text-align: center;
-  color: #657786;
-  padding: 15px;
-  font-style: italic;
-}
-
-/* Стили для списка комментариев */
+/* Список комментариев */
 .commentsList {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-sm);
 }
 
 .commentItem {
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-sm);
+  font-size: 14px;
+  line-height: 1.4;
 }
 
-.commentHeader {
+.commentMain {
   display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.commentAvatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 10px;
-  background-color: #e1e8ed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.commentAvatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.commentAuthor {
-  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
 }
 
 .commentAuthorName {
-  font-weight: bold;
-  color: #14171a;
-  font-size: 14px;
-  margin-right: 5px;
+  font-weight: 600;
+  margin-right: 6px;
+  color: var(--color-black);
 }
 
-.commentTime {
-  color: #657786;
-  font-size: 12px;
-}
-
-.commentContent {
-  margin-bottom: 8px;
-  font-size: 14px;
-  line-height: 1.4;
-  color: #14171a;
-  word-wrap: break-word;
-}
-
-.commentContent p {
-  margin: 0;
+.commentText {
+  color: var(--color-black);
+  word-break: break-word;
 }
 
 .commentActions {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-top: 5px;
+  gap: var(--spacing-sm);
+  margin-top: 2px;
 }
 
-.replyButton, .viewRepliesButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #657786;
+.commentTime {
+  color: var(--color-medium-gray);
   font-size: 12px;
-  padding: 5px 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
-.replyButton:hover, .viewRepliesButton:hover {
-  opacity: 0.8;
+.likes {
+  color: var(--color-medium-gray);
+  font-size: 12px;
 }
 
-/* Стили для кнопки удаления комментария */
-.deleteCommentBtn {
+.replyButton, 
+.deleteCommentBtn,
+.viewRepliesButton {
   background: none;
   border: none;
+  color: var(--color-medium-gray);
+  font-size: 12px;
+  padding: 0;
   cursor: pointer;
-  color: #657786;
-  padding: 5px;
-  margin-left: auto;
 }
 
-.deleteCommentBtn:hover {
-  opacity: 0.8;
+.likeButton {
+  background: none;
+  border: none;
+  color: var(--color-medium-gray);
+  font-size: 12px;
+  padding: 0;
+  cursor: pointer;
+  margin-left: 6px;
+  line-height: 1;
 }
 
-/* Стили для формы ответа */
+.likeButton.liked {
+  color: var(--color-accent);
+}
+
+/* Форма ответа */
 .replyForm {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #e1e8ed;
+  margin-top: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
 }
 
 .replyInput {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #e1e8ed;
-  border-radius: 8px;
-  resize: none;
-  margin-bottom: 10px;
+  border: 1px solid var(--color-01);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 14px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .replyFormActions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--spacing-sm);
 }
 
-/* Стили для кнопки отмены ответа */
 .cancelReplyBtn {
-  padding: 6px 12px;
+  background: none;
   border: none;
-  border-radius: 18px;
-  font-size: 13px;
+  color: var(--color-medium-gray);
+  font-size: 14px;
   cursor: pointer;
-  background-color: #e1e8ed;
-  color: #657786;
 }
 
-.cancelReplyBtn:hover {
-  opacity: 0.9;
-}
-
-/* Стили для кнопки отправки ответа */
 .submitReplyBtn {
-  padding: 6px 12px;
+  background: none;
   border: none;
-  border-radius: 18px;
-  font-size: 13px;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  background-color: #1da1f2;
-  color: white;
-}
-
-.submitReplyBtn:hover {
-  opacity: 0.9;
 }
 
 .submitReplyBtn:disabled {
-  background-color: #a5d0f5;
-  cursor: not-allowed;
+  color: var(--color-light-gray);
+  cursor: default;
 }
 
-/* Стили для списка ответов */
+/* Ответы на комментарии */
+.repliesInfo {
+  margin-top: var(--spacing-xs);
+}
+
 .repliesList {
-  margin-top: 10px;
-  padding-top: 10px;
-  padding-left: 20px;
-  border-top: 1px solid #e1e8ed;
+  margin-top: var(--spacing-xs);
+  padding-left: var(--spacing-md);
+  border-left: 1px solid var(--color-01);
 }
 
 .replyItem {
-  margin-bottom: 10px;
-  padding: 8px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  margin-bottom: var(--spacing-xs);
 }
 
-/* Стили для формы добавления комментария */
+/* Форма добавления комментария */
 .addCommentForm {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #e1e8ed;
+  display: flex;
+  border-top: 1px solid var(--color-01);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
 }
 
 .commentInput {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e1e8ed;
-  border-radius: 10px;
-  resize: none;
-  margin-bottom: 12px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-.commentInput:focus {
-  border-color: #1da1f2;
-  outline: none;
-}
-
-.submitCommentBtn {
-  padding: 8px 20px;
-  background-color: #1da1f2;
-  color: white;
+  flex: 1;
   border: none;
-  border-radius: 20px;
-  cursor: pointer;
+  outline: none;
+  background: transparent;
+  padding: var(--spacing-sm) 0;
+  color: var(--color-black);
   font-size: 14px;
-  font-weight: 500;
-  float: right;
 }
 
-.submitCommentBtn:hover {
-  opacity: 0.9;
+.commentInput::placeholder {
+  color: var(--color-medium-gray);
 }
 
-.submitCommentBtn:disabled {
-  background-color: #a5d0f5;
-  cursor: not-allowed;
+.postCommentBtn {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 var(--spacing-sm);
+  white-space: nowrap;
+}
+
+.postCommentBtn:disabled {
+  color: var(--color-light-gray);
+  cursor: default;
+}
+
+/* Состояния */
+.commentsLoading, .repliesLoading {
+  color: var(--color-medium-gray);
+  font-size: 14px;
+  padding: var(--spacing-md) 0;
+  text-align: center;
+}
+
+.noComments {
+  color: var(--color-medium-gray);
+  font-size: 14px;
+  padding: var(--spacing-md) 0;
+  text-align: center;
 }
 
 /* Стили для формы редактирования */
 .editForm {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
   width: 100%;
 }
 
 .editInput {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #e1e8ed;
-  border-radius: 8px;
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-light-gray);
+  border-radius: var(--radius-sm);
   resize: none;
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-md);
   font-size: 14px;
-  background-color: #f8f9fa;
+  background-color: var(--color-01);
+  font-family: 'Encode Sans', sans-serif;
 }
 
 .editFormButtons {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--spacing-md);
 }
 
 .editCommentBtn {
   background: none;
   border: none;
   cursor: pointer;
-  color: #657786;
+  color: var(--color-medium-gray);
   font-size: 12px;
-  padding: 5px 0;
+  padding: var(--spacing-xs) 0;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--spacing-xs);
 }
 
 .editCommentBtn:hover {
@@ -682,17 +638,17 @@
 
 .replyActions {
   display: flex;
-  margin-top: 5px;
+  margin-top: var(--spacing-xs);
   justify-content: flex-end;
 }
 
 /* Стили для кнопок в форме редактирования */
 .submitButton {
-  padding: 6px 12px;
-  background-color: #1da1f2;
-  color: white;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--color-black);
+  color: var(--color-white);
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   font-size: 13px;
   font-weight: normal;
   cursor: pointer;
@@ -703,16 +659,16 @@
 }
 
 .submitButton:disabled {
-  background-color: #a5d0f5;
+  background-color: var(--color-light-gray);
   cursor: not-allowed;
 }
 
 .cancelButton {
-  padding: 6px 12px;
-  background-color: #e1e8ed;
-  color: #657786;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--color-02);
+  color: var(--color-medium-gray);
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   font-size: 13px;
   cursor: pointer;
 }
@@ -722,16 +678,16 @@
 }
 
 .cancelButton:disabled {
-  background-color: #f1f1f1;
-  color: #a9a9a9;
+  background-color: var(--color-04);
+  color: var(--color-light-gray);
   cursor: not-allowed;
 }
 
 /* Дополнительные стили для отображения процесса загрузки */
 .commentLoading {
   text-align: center;
-  color: #657786;
-  padding: 5px;
+  color: var(--color-medium-gray);
+  padding: var(--spacing-xs);
   font-size: 12px;
   font-style: italic;
 } 

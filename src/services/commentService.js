@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cx21729.tw1.ru';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cy35179.tw1.ru';
 
 const commentService = {
   // Получить комментарии к посту
@@ -106,11 +104,10 @@ const commentService = {
     }
   },
 
-  // Обновить комментарий (этот метод может потребоваться в будущем)
+  // Обновить комментарий
   async updateComment(commentId, telegramId, content) {
     try {
-      // Примечание: API для обновления комментария не было предоставлено
-      // Это примерная реализация, которую нужно будет изменить, когда появится соответствующий API
+      // Проверяем, поддерживается ли API для обновления комментариев
       const response = await fetch(`${API_BASE_URL}/api/comments`, {
         method: 'PUT',
         headers: {
@@ -122,6 +119,10 @@ const commentService = {
           content: content
         })
       });
+      
+      if (response.status === 404 || response.status === 501) {
+        throw new Error('API для обновления комментариев не поддерживается');
+      }
       
       if (!response.ok) {
         throw new Error(`Ошибка HTTP: ${response.status}`);
@@ -135,10 +136,23 @@ const commentService = {
   },
 
   // Лайкнуть комментарий
-  async likeComment(commentId) {
+  async likeComment(commentId, telegramId) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/comments/${commentId}/like`);
-      return response.data;
+      const response = await fetch(`${API_BASE_URL}/api/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          telegram_id: telegramId
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+      }
+      
+      return await response.json();
     } catch (error) {
       console.error('Ошибка при лайке комментария:', error);
       throw error;
@@ -146,10 +160,23 @@ const commentService = {
   },
 
   // Убрать лайк с комментария
-  async unlikeComment(commentId) {
+  async unlikeComment(commentId, telegramId) {
     try {
-      const response = await axios.delete(`${API_BASE_URL}/comments/${commentId}/like`);
-      return response.data;
+      const response = await fetch(`${API_BASE_URL}/api/comments/${commentId}/like`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          telegram_id: telegramId
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+      }
+      
+      return await response.json();
     } catch (error) {
       console.error('Ошибка при удалении лайка комментария:', error);
       throw error;

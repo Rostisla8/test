@@ -1,0 +1,54 @@
+.avatar {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  background-color: var(--color-02);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-medium-gray);
+}
+
+/* Размеры аватара */
+.small {
+  width: 30px;
+  height: 30px;
+}
+
+.small .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.medium {
+  width: 40px;
+  height: 40px;
+}
+
+.medium .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.large {
+  width: 56px;
+  height: 56px;
+}
+
+.large .icon {
+  width: 24px;
+  height: 24px;
+} 

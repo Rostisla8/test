@@ -1,13 +1,60 @@
+/* Базовые цвета из дизайна */
+:root {
+  --color-01: #F2F2F5; /* Светло-серый фон */
+  --color-02: #F2F2F7; /* Чуть темнее серый */
+  --color-03: #F2F2A2; /* Светлый акцент */
+  --color-04: #F1F2F2; /* Ещё один серый */
+  --color-05: #F1F1F1; /* Самый светлый серый */
+  --color-black: #222222; /* Почти чёрный */
+  --color-dark-gray: #555555; /* Тёмно-серый */
+  --color-medium-gray: #888888; /* Серый средний */
+  --color-light-gray: #DDDDDD; /* Светло-серый */
+  --color-white: #FFFFFF; /* Белый */
+  --color-accent: #1A1A1A; /* Акцентный цвет */
+  --color-accent-light: #2A2A2A; /* Светлее акцентный */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-round: 50%;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Encode Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-01);
+  color: var(--color-black);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+button, input, textarea, select {
+  font-family: 'Encode Sans', sans-serif;
+}
+
+/* Стили для кнопок */
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

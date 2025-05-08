@@ -88,67 +88,57 @@ const getFromCache = (key, maxAge) => {
 const processWeatherData = (apiData) => {
   if (!apiData || !apiData.list) return [];
 
+  // Текущая дата и время
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-  const periods = {
-    todayMorning: { label: "Сегодня утром", range: [6, 12], date: todayStr, data: [] },
-    todayDay:     { label: "Сегодня днем", range: [12, 18], date: todayStr, data: [] },
-    todayNight:   { label: "Сегодня вечером", range: [18, 24], date: todayStr, data: [] },
-    tomorrowMorning: { label: "Завтра утром", range: [6, 12], date: tomorrowStr, data: [] },
-    tomorrowDay:     { label: "Завтра днем", range: [12, 18], date: tomorrowStr, data: [] },
-    tomorrowNight:   { label: "Завтра вечером", range: [18, 24], date: tomorrowStr, data: [] },
-  };
-
-  // Распределяем 3-часовые прогнозы по периодам
-  apiData.list.forEach(item => {
+  
+  // Устанавливаем точку отсчета - начало текущего дня (00:00)
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  
+  // Начало завтрашнего дня
+  const tomorrowStart = new Date(todayStart);
+  tomorrowStart.setDate(todayStart.getDate() + 1);
+  
+  // Начало послезавтрашнего дня
+  const dayAfterTomorrowStart = new Date(todayStart);
+  dayAfterTomorrowStart.setDate(todayStart.getDate() + 2);
+  
+  const result = [];
+  
+  // Получаем прогнозы с интервалом в 3 часа на ближайшие дни
+  apiData.list.forEach((item) => {
+    // Преобразуем время из timestamp в объект Date
     const itemDate = new Date(item.dt * 1000);
-    const itemDateStr = itemDate.toISOString().split('T')[0];
-    const itemHour = itemDate.getHours();
-
-    for (const key in periods) {
-      const period = periods[key];
-      if (itemDateStr === period.date && itemHour >= period.range[0] && itemHour < period.range[1]) {
-        period.data.push(item);
-        break; // Переходим к следующему элементу API
-      }
+    
+    // Определяем к какому дню относится прогноз
+    let dayLabel;
+    
+    if (itemDate >= todayStart && itemDate < tomorrowStart) {
+      dayLabel = 'Сегодня';
+    } else if (itemDate >= tomorrowStart && itemDate < dayAfterTomorrowStart) {
+      dayLabel = 'Завтра';
+    } else {
+      // Форматируем дату для отображения (например, "12.03")
+      const day = itemDate.getDate().toString().padStart(2, '0');
+      const month = (itemDate.getMonth() + 1).toString().padStart(2, '0');
+      dayLabel = `${day}.${month}`;
     }
-  });
-
-  // Находим максимальную температуру и соответствующие данные для каждого периода
-  const result = Object.values(periods).map(period => {
-    if (period.data.length === 0) return null; // Пропускаем пустые периоды
-
-    // Находим прогноз с максимальной температурой
-    let maxTempItem = period.data[0];
-    period.data.forEach(item => {
-      if (item.main.temp > maxTempItem.main.temp) {
-        maxTempItem = item;
-      }
+    
+    // Форматируем время для отображения
+    const hours = itemDate.getHours();
+    const formattedHours = hours.toString().padStart(2, '0');
+    
+    // Создаем объект для отображения
+    result.push({
+      time: `${dayLabel}, ${formattedHours}:00`,
+      temp: item.main.temp,
+      description: item.weather[0]?.description.charAt(0).toUpperCase() + item.weather[0]?.description.slice(1),
+      icon: item.weather[0]?.icon,
+      humidity: item.main?.humidity,
+      windSpeed: item.wind?.speed,
+      pressure: item.main?.pressure
     });
-    
-    // Используем данные из прогноза с максимальной температурой
-    const description = maxTempItem.weather[0]?.description || 'N/A';
-    const icon = maxTempItem.weather[0]?.icon || '01d';
-    
-    // Добавляем дополнительные данные для всех периодов
-    const humidity = maxTempItem.main?.humidity;
-    const windSpeed = maxTempItem.wind?.speed;
-    const pressure = maxTempItem.main?.pressure;
-
-    return {
-      label: period.label,
-      temp: maxTempItem.main.temp,
-      description: description.charAt(0).toUpperCase() + description.slice(1), // С большой буквы
-      icon: icon,
-      humidity: humidity,
-      windSpeed: windSpeed,
-      pressure: pressure
-    };
-  }).filter(Boolean); // Убираем null (пустые периоды)
+  });
 
   return result;
 };
@@ -163,6 +153,72 @@ const HomePage = () => {
   const [weatherData, setWeatherData] = useState([]);
   const [loadingWeather, setLoadingWeather] = useState(true);
   const [weatherError, setWeatherError] = useState(null);
+  
+  // --- Состояние для местоположения пользователя ---
+  const [userLocation, setUserLocation] = useState({
+    lat: BREST_LAT,
+    lon: BREST_LON,
+    name: BREST_LOCATION_NAME
+  });
+
+  // --- Получение местоположения пользователя ---
+  useEffect(() => {
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log('Получены координаты пользователя:', latitude, longitude);
+            
+            // Получаем название места по координатам
+            try {
+              const response = await fetch(
+                `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${OPENWEATHER_API_KEY}`
+              );
+              
+              if (response.ok) {
+                const data = await response.json();
+                let locationName = BREST_LOCATION_NAME; // По умолчанию
+                
+                if (data && data.length > 0) {
+                  const place = data[0];
+                  locationName = place.local_names && place.local_names.ru
+                    ? `${place.local_names.ru}, ${place.country}`
+                    : `${place.name}, ${place.country}`;
+                }
+                
+                console.log('Определено местоположение:', locationName);
+                
+                // Обновляем состояние с координатами и названием
+                setUserLocation({
+                  lat: latitude,
+                  lon: longitude,
+                  name: locationName
+                });
+              }
+            } catch (error) {
+              console.error('Ошибка при определении названия места:', error);
+              // Используем только координаты, без названия
+              setUserLocation({
+                lat: latitude,
+                lon: longitude,
+                name: BREST_LOCATION_NAME
+              });
+            }
+          },
+          (error) => {
+            console.error('Ошибка геолокации:', error);
+            // В случае ошибки используем координаты Бреста
+          }
+        );
+      } else {
+        console.log('Геолокация не поддерживается в этом браузере');
+        // Используем координаты Бреста
+      }
+    };
+    
+    getUserLocation();
+  }, []);
 
   // --- Загрузка курсов для ОТОБРАЖАЕМЫХ валют ---
   const fetchRates = useCallback(async (currenciesToFetch) => {
@@ -283,11 +339,16 @@ const HomePage = () => {
         return;
       }
 
+      // Используем координаты пользователя или координаты Бреста по умолчанию
+      // Также создаем ключ кеша, основанный на координатах
+      const userLat = userLocation.lat;
+      const userLon = userLocation.lon;
+      const cacheKey = `${WEATHER_CACHE_KEY}_${userLat.toFixed(2)}_${userLon.toFixed(2)}`;
+      
       // Сначала проверяем кеш
-      const cacheKey = `${WEATHER_CACHE_KEY}_brest`;
       const cachedWeatherData = getFromCache(cacheKey, CACHE_DURATION.WEATHER);
       if (cachedWeatherData) {
-        console.log('Загружены данные погоды из кеша для Бреста');
+        console.log('Загружены данные погоды из кеша');
         setWeatherData(cachedWeatherData);
         setLoadingWeather(false);
         return;
@@ -295,14 +356,18 @@ const HomePage = () => {
 
       // Если кеш пуст или устарел, делаем запрос к API
       try {
+        // Запрашиваем данные с более частыми интервалами (каждые 3 часа на 2 дня)
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${BREST_LAT}&lon=${BREST_LON}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=ru`
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${userLat}&lon=${userLon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=ru&cnt=16`
         );
+        
         if (!response.ok) {
           throw new Error(`Weather API error! status: ${response.status}`);
         }
+        
         const data = await response.json();
-        console.log('Получены данные погоды из API для Бреста');
+        console.log('Получены данные погоды из API');
+        
         const processedData = processWeatherData(data);
         
         // Сохраняем в кеш и устанавливаем в состояние
@@ -317,7 +382,7 @@ const HomePage = () => {
     };
 
     loadWeatherData();
-  }, []); // Загружаем только при монтировании компонента
+  }, [userLocation]);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -395,7 +460,7 @@ const HomePage = () => {
 
       <section className={`${styles.section} ${styles.weatherSection}`}>
         <h2 className={styles.sectionTitle}>Прогноз погоды</h2>
-        <p className={styles.sectionSubtitle}>{BREST_LOCATION_NAME}</p>
+        <p className={styles.sectionSubtitle}>{userLocation.name}</p>
         {loadingWeather && <p>Загрузка погоды...</p>}
         {weatherError && <p style={{ color: 'red' }}>{weatherError}</p>}
         {!loadingWeather && !weatherError && (
