@@ -32,7 +32,7 @@ const TrendsPage = () => {
   // Добавляем новые состояния для редактирования комментариев
   const [editingComment, setEditingComment] = useState(null); // ID комментария, который редактируется
   
-  const API_BASE_URL = 'https://cy35179.tw1.ru'; // Базовый URL API
+  const API_BASE_URL = 'https://cw17922.tw1.ru'; // Базовый URL API
   
   const fileInputRef = useRef(null);
   const observerRef = useRef(null); // Ref для IntersectionObserver

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaCalendarAlt, FaNewspaper, FaUser } from 'react-icons/fa';
+import { FaHome, FaCalendarAlt, FaNewspaper, FaUser, FaVoteYea } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import styles from './BottomNavigation.module.css';
 
@@ -11,6 +11,9 @@ const BottomNavigation = ({ activeTab = 'schedule' }) => {
       </Link>
       <Link to="/schedule" className={`${styles.navItem} ${activeTab === 'schedule' ? styles.active : ''}`}>
         <FaCalendarAlt size={20} />
+      </Link>
+      <Link to="/polls" className={`${styles.navItem} ${activeTab === 'polls' ? styles.active : ''}`}>
+        <FaVoteYea size={20} />
       </Link>
       <Link to="/news" className={`${styles.navItem} ${activeTab === 'news' ? styles.active : ''}`}>
         <FaNewspaper size={20} />

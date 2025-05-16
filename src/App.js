@@ -7,6 +7,7 @@ import MovieSchedulePage from './pages/MovieSchedulePage/MovieSchedulePage';
 import NewsPage from './pages/NewsPage/NewsPage';
 import TrendsPage from './pages/TrendsPage/TrendsPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import PollsPage from './pages/PollsPage/PollsPage';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <MovieSchedulePage />
             <BottomNavigation activeTab="schedule" />
           </>} />
+          <Route path="/polls" element={<PollsPage />} />
           <Route path="/news" element={<>
             <NewsPage />
             <BottomNavigation activeTab="news" />

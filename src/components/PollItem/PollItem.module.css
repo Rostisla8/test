@@ -1,0 +1,235 @@
+.pollItem {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pollQuestion {
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 8px 0;
+}
+
+.pollDescription {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0 0 16px 0;
+}
+
+.optionsContainer {
+  margin-bottom: 20px;
+}
+
+.optionItem {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.optionItem:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.optionItem.selected {
+  background-color: rgba(78, 170, 234, 0.05);
+}
+
+.optionIconContainer {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.optionContent {
+  flex: 1;
+}
+
+.optionHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  align-items: center;
+}
+
+.optionText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+}
+
+.optionPercentage {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.progressBarContainer {
+  height: 6px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease-in-out;
+  animation: pulse 1s ease-in-out;
+}
+
+.optionFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.optionStats {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.pollFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.voteButton, .resultsButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.voteButton {
+  background-color: #4EAAEA;
+  color: white;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.voteButton:disabled {
+  background-color: #c0d3e0;
+  cursor: not-allowed;
+}
+
+.resultsButton {
+  background-color: transparent;
+  color: #4EAAEA;
+  border: 1px solid #4EAAEA;
+  flex: 1;
+}
+
+.voteButton:hover:not(:disabled) {
+  background-color: #3d99d3;
+}
+
+.resultsButton:hover {
+  background-color: rgba(78, 170, 234, 0.05);
+}
+
+@media (max-width: 768px) {
+  .pollFooter {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .voteButton, .resultsButton {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+.optionSelector {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.radioButton {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.radioSelected {
+  border-color: #4EAAEA;
+  animation: pulse 0.5s ease-in-out;
+}
+
+.radioSelected:after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #4EAAEA;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.newVoteButton {
+  background-color: #6c757d;
+  color: white;
+  flex: 1;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.newVoteButton:hover {
+  background-color: #5a6268;
+}
+
+.voting {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.votedOption {
+  background-color: rgba(78, 170, 234, 0.1);
+  border-left: 3px solid #4EAAEA;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Плавное появление результатов */
+.optionStats, .optionPercentage {
+  animation: fadeIn 0.5s ease-in-out forwards;
+} 

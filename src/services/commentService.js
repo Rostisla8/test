@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cy35179.tw1.ru';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://cw17922.tw1.ru';
 
 const commentService = {
   // Получить комментарии к посту

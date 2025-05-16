@@ -1,0 +1,208 @@
+.pollsPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.pageHeader {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+}
+
+.cityImageContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: #4EAAEA; /* Цвет фона по умолчанию, если картинка не загрузится */
+}
+
+.cityImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.cityInfo {
+  z-index: 1;
+}
+
+.cityName {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.cityStats {
+  display: flex;
+  align-items: center;
+}
+
+.percentage {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+  margin-bottom: 60px; /* Для нижней навигации */
+  margin-top: -20px; /* Нахлест над изображением */
+  background-color: #f5f5f5;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.pollHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #212529;
+}
+
+.pollControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controlButton, .shareButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.controlButton:hover, .shareButton:hover {
+  background-color: #e0e0e0;
+}
+
+.controlButton:disabled, .shareButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+}
+
+.activePoll {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: baseline;
+  margin: 0 4px;
+}
+
+.currentPage {
+  font-size: 16px;
+  font-weight: 700;
+  color: #212529;
+}
+
+.totalPages {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.pollsContainer {
+  margin-top: 20px;
+}
+
+/* Медиа-запросы для различных устройств */
+@media (min-width: 768px) {
+  .pageHeader {
+    height: 220px;
+  }
+  
+  .content {
+    padding: 24px;
+    max-width: 800px;
+    margin: -30px auto 60px auto;
+  }
+  
+  .pollHeader {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+}
+
+.cityImageBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right bottom, #4EAAEA, #64C6FF, #50B5F3);
+  background-size: cover;
+  background-position: center;
+  /* Добавляем декоративный узор */
+  background-blend-mode: soft-light;
+}
+
+/* Добавляем декоративные элементы для имитации городского пейзажа */
+.cityImageBackground:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 40" preserveAspectRatio="none"><path d="M0,0 L0,40 L1000,40 L1000,0 L900,20 L800,10 L700,30 L600,5 L500,25 L400,10 L300,25 L200,15 L100,25 Z" fill="white"/></svg>');
+  background-size: 100% 100%;
+  z-index: 1;
+}
+
+/* Добавляем дополнительный слой с декоративными элементами города */
+.cityImageBackground:before {
+  content: '';
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 60" preserveAspectRatio="none"><path d="M50,60 L50,30 L70,30 L70,10 L90,10 L90,30 L110,30 L110,60 M150,60 L150,20 L180,20 L180,60 M220,60 L220,40 L240,40 L240,20 L260,20 L260,40 L280,40 L280,60 M320,60 L320,10 L350,10 L350,60 M400,60 L400,30 L420,30 L420,10 L440,10 L440,30 L460,30 L460,60 M500,60 L500,40 L510,30 L520,40 L520,60 M600,60 L600,40 L620,40 L640,20 L660,40 L680,40 L680,60 M720,60 L720,40 L750,10 L780,40 L780,60 M820,60 L820,30 L840,30 L840,10 L860,10 L860,30 L880,30 L880,60 M920,60 L920,10 L940,10 L940,60" fill="rgba(255,255,255,0.1)" /></svg>');
+  background-size: 100% 100%;
+  opacity: 0.7;
+} 
